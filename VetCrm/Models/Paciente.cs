@@ -18,8 +18,8 @@
         public int RacaId { get; set; }
         public Raca Raca { get; set; }
 
-        public List<Consulta> Consultas { get; set; }
-        public List<Prontuario> Prontuarios { get; set; }
-        public List<PacienteVacina> PacienteVacinas { get; set; }
+        public List<Consulta> Consultas { get; set; } = new List<Consulta>();
+        public List<Prontuario> Prontuarios { get; set; } = new List<Prontuario>();
+        public List<PacienteVacina> PacienteVacinas { get; set; } = new List<PacienteVacina>();
     }
 }

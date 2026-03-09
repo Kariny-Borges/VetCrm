@@ -9,6 +9,6 @@
         public string Email { get; set; }
         public string Especialidade { get; set; }
 
-        public List<Consulta> Consultas { get; set; }
+        public List<Consulta> Consultas { get; set; } = new List<Consulta>();
     }
 }

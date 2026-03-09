@@ -9,6 +9,6 @@ namespace VetCrm.Models
         public string Nome { get; set; }
         public string Descricao { get; set; }
 
-        public List<PacienteVacina> PacienteVacinas { get; set; }
+        public List<PacienteVacina> PacienteVacinas { get; set; } = new List<PacienteVacina>();
     }
 }
