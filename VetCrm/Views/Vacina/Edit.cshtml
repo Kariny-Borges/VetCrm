@@ -1,0 +1,15 @@
+﻿@model VetCrm.Models.Vacina
+<h2>Editar Vacina</h2>
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <label asp-for="Nome">Nome</label>
+        <input asp-for="Nome" class="form-control" />
+    </div>
+    <div>
+        <label asp-for="Descricao">Descrição</label>
+        <input asp-for="Descricao" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Index">Voltar</a>
+</form>

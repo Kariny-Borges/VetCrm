@@ -1,0 +1,8 @@
+﻿@model VetCrm.Models.Especie
+<h2>Detalhes da Espécie</h2>
+<div>
+    <label>Nome:</label>
+    <span>@Model.Nome</span>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+<a asp-action="Index">Voltar</a>

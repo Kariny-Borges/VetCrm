@@ -1,0 +1,12 @@
+﻿@model VetCrm.Models.Vacina
+<h2>Detalhes da Vacina</h2>
+<div>
+    <label>Nome:</label>
+    <span>@Model.Nome</span>
+</div>
+<div>
+    <label>Descrição:</label>
+    <span>@Model.Descricao</span>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+<a asp-action="Index">Voltar</a>

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VetCrm.Models;
 
 namespace VetCrm.Data
@@ -55,5 +55,6 @@ namespace VetCrm.Data
                 .HasForeignKey(pv => pv.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+        public DbSet<VetCrm.Models.Contato> Contato { get; set; } = default!;
     }
 }
