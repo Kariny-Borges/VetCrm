@@ -1,8 +1,102 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Início";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-4">
+    <h1 class="display-4">🐾 Bem-vindo ao VetCrm</h1>
+    <p class="text-muted">Sistema de gestão para clínicas veterinárias</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <a asp-controller="Paciente" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-success shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">🐶</div>
+                    <h5 class="card-title mt-2">Pacientes</h5>
+                    <p class="card-text text-muted small">Gerenciar animais cadastrados</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Consulta" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-success shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">📋</div>
+                    <h5 class="card-title mt-2">Consultas</h5>
+                    <p class="card-text text-muted small">Agendar e gerenciar consultas</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Prontuario" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-success shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">📁</div>
+                    <h5 class="card-title mt-2">Prontuários</h5>
+                    <p class="card-text text-muted small">Histórico médico dos pacientes</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="PacienteVacina" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-success shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">💉</div>
+                    <h5 class="card-title mt-2">Vacinas</h5>
+                    <p class="card-text text-muted small">Controle de vacinação</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-3">
+        <a asp-controller="Proprietario" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-secondary shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">👤</div>
+                    <h5 class="card-title mt-2">Proprietários</h5>
+                    <p class="card-text text-muted small">Donos dos animais</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Veterinario" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-secondary shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">👨‍⚕️</div>
+                    <h5 class="card-title mt-2">Veterinários</h5>
+                    <p class="card-text text-muted small">Equipe médica</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Especie" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-secondary shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">🐾</div>
+                    <h5 class="card-title mt-2">Espécies</h5>
+                    <p class="card-text text-muted small">Tipos de animais</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-controller="Vacina" asp-action="Index" class="text-decoration-none">
+            <div class="card h-100 border-secondary shadow-sm">
+                <div class="card-body text-center py-4">
+                    <div style="font-size:2.5rem">💊</div>
+                    <h5 class="card-title mt-2">Vacinas</h5>
+                    <p class="card-text text-muted small">Cadastro de vacinas</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>

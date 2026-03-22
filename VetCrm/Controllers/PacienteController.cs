@@ -19,46 +19,38 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        // GET: Paciente
         public async Task<IActionResult> Index()
         {
-            var vetCrmContext = _context.Pacientes.Include(p => p.Especie).Include(p => p.Proprietario).Include(p => p.Raca);
+            var vetCrmContext = _context.Pacientes
+                .Include(p => p.Especie)
+                .Include(p => p.Proprietario)
+                .Include(p => p.Raca);
             return View(await vetCrmContext.ToListAsync());
         }
 
-        // GET: Paciente/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var paciente = await _context.Pacientes
                 .Include(p => p.Especie)
                 .Include(p => p.Proprietario)
                 .Include(p => p.Raca)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (paciente == null)
-            {
-                return NotFound();
-            }
+
+            if (paciente == null) return NotFound();
 
             return View(paciente);
         }
 
-        // GET: Paciente/Create
         public IActionResult Create()
         {
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Id");
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Id");
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Id");
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome");
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome");
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome");
             return View();
         }
 
-        // POST: Paciente/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Idade,Sexo,Peso,DataCadastro,ProprietarioId,EspecieId,RacaId")] Paciente paciente)
@@ -69,42 +61,30 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Id", paciente.EspecieId);
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Id", paciente.ProprietarioId);
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Id", paciente.RacaId);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", paciente.EspecieId);
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", paciente.ProprietarioId);
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", paciente.RacaId);
             return View(paciente);
         }
 
-        // GET: Paciente/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var paciente = await _context.Pacientes.FindAsync(id);
-            if (paciente == null)
-            {
-                return NotFound();
-            }
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Id", paciente.EspecieId);
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Id", paciente.ProprietarioId);
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Id", paciente.RacaId);
+            if (paciente == null) return NotFound();
+
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", paciente.EspecieId);
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", paciente.ProprietarioId);
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", paciente.RacaId);
             return View(paciente);
         }
 
-        // POST: Paciente/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Idade,Sexo,Peso,DataCadastro,ProprietarioId,EspecieId,RacaId")] Paciente paciente)
         {
-            if (id != paciente.Id)
-            {
-                return NotFound();
-            }
+            if (id != paciente.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -115,55 +95,38 @@ namespace VetCrm.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PacienteExists(paciente.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!PacienteExists(paciente.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Id", paciente.EspecieId);
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Id", paciente.ProprietarioId);
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Id", paciente.RacaId);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", paciente.EspecieId);
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", paciente.ProprietarioId);
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", paciente.RacaId);
             return View(paciente);
         }
 
-        // GET: Paciente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var paciente = await _context.Pacientes
                 .Include(p => p.Especie)
                 .Include(p => p.Proprietario)
                 .Include(p => p.Raca)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (paciente == null)
-            {
-                return NotFound();
-            }
+
+            if (paciente == null) return NotFound();
 
             return View(paciente);
         }
 
-        // POST: Paciente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);
-            if (paciente != null)
-            {
-                _context.Pacientes.Remove(paciente);
-            }
-
+            if (paciente != null) _context.Pacientes.Remove(paciente);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
