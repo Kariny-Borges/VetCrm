@@ -13,6 +13,7 @@
 
         public int VeterinarioId { get; set; }
         public Veterinario Veterinario { get; set; }
+        public int ProntuaarioId { get; set; }
 
         public Prontuario Prontuario { get; set; }
     }
