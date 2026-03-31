@@ -1,65 +1,38 @@
 @model IEnumerable<VetCrm.Models.Prontuario>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Prontuarios";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📄 Prontuarios</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Novo Prontuario</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Diagnostico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tratamento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataRegistro)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Paciente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Consulta)
-            </th>
-            <th></th>
+            <th>Data Registro</th>
+            <th>Diagnostico</th>
+            <th>Tratamento</th>
+            <th>Paciente</th>
+            <th>Acoes</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diagnostico)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tratamento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataRegistro)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paciente.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Consulta.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DataRegistro.ToString("dd/MM/yyyy")</td>
+                <td>@item.Diagnostico</td>
+                <td>@item.Tratamento</td>
+                <td>@item.Paciente?.Nome</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

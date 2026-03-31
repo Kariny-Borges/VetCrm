@@ -49,7 +49,7 @@ namespace VetCrm.Controllers
         // GET: Proprietario/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Set<Endereco>(), "Id", "Id");
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro");
             return View();
         }
 
@@ -60,13 +60,16 @@ namespace VetCrm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,CPF,DataCadastro,EnderecoId")] Proprietario proprietario)
         {
+            ModelState.Remove("Endereco");
+            ModelState.Remove("Contatos");
+            ModelState.Remove("Pacientes");
             if (ModelState.IsValid)
             {
                 _context.Add(proprietario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<Endereco>(), "Id", "Id", proprietario.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", proprietario.EnderecoId);
             return View(proprietario);
         }
 
@@ -83,7 +86,7 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<Endereco>(), "Id", "Id", proprietario.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", proprietario.EnderecoId);
             return View(proprietario);
         }
 
@@ -119,7 +122,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Set<Endereco>(), "Id", "Id", proprietario.EnderecoId);
+            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", proprietario.EnderecoId);
             return View(proprietario);
         }
 

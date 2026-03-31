@@ -1,47 +1,55 @@
 @model VetCrm.Models.PacienteVacina
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Vacinacao";
 }
 
-<h1>Edit</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Editar Vacinacao</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
+</div>
 
-<h4>PacienteVacina</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="PacienteId" class="control-label"></label>
-                <select asp-for="PacienteId" class="form-control" asp-items="ViewBag.PacienteId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="PacienteId">Paciente</label>
+                <select asp-for="PacienteId" class="form-select" asp-items="ViewBag.PacienteId">
+                    <option value="">Selecione o paciente...</option>
+                </select>
                 <span asp-validation-for="PacienteId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="VacinaId" class="control-label"></label>
-                <select asp-for="VacinaId" class="form-control" asp-items="ViewBag.VacinaId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="VacinaId">Vacina</label>
+                <select asp-for="VacinaId" class="form-select" asp-items="ViewBag.VacinaId">
+                    <option value="">Selecione a vacina...</option>
+                </select>
                 <span asp-validation-for="VacinaId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataAplicacao" class="control-label"></label>
-                <input asp-for="DataAplicacao" class="form-control" />
-                <span asp-validation-for="DataAplicacao" class="text-danger"></span>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DataAplicacao">Data de Aplicacao</label>
+                    <input asp-for="DataAplicacao" class="form-control" type="date" />
+                    <span asp-validation-for="DataAplicacao" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DataProximaDose">Proxima Dose</label>
+                    <input asp-for="DataProximaDose" class="form-control" type="date" />
+                    <span asp-validation-for="DataProximaDose" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DataProximaDose" class="control-label"></label>
-                <input asp-for="DataProximaDose" class="form-control" />
-                <span asp-validation-for="DataProximaDose" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

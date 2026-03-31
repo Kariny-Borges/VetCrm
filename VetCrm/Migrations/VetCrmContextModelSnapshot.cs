@@ -48,7 +48,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("EnderecoId");
 
-                    b.ToTable("Proprietarios");
+                    b.ToTable("Proprietarios", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Consulta", b =>
@@ -69,9 +69,6 @@ namespace VetCrm.Migrations
                     b.Property<int>("PacienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProntuaarioId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TipoConsulta")
                         .HasColumnType("int");
 
@@ -84,7 +81,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("VeterinarioId");
 
-                    b.ToTable("Consultas");
+                    b.ToTable("Consultas", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Contato", b =>
@@ -115,7 +112,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("VeterinarioId");
 
-                    b.ToTable("Contato");
+                    b.ToTable("Contato", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Endereco", b =>
@@ -152,7 +149,7 @@ namespace VetCrm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Endereco");
+                    b.ToTable("Endereco", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Especie", b =>
@@ -169,7 +166,7 @@ namespace VetCrm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Especies");
+                    b.ToTable("Especies", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>
@@ -214,7 +211,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("RacaId");
 
-                    b.ToTable("Pacientes");
+                    b.ToTable("Pacientes", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.PacienteVacina", b =>
@@ -243,7 +240,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("VacinaId");
 
-                    b.ToTable("PacienteVacinas");
+                    b.ToTable("PacienteVacinas", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Prontuario", b =>
@@ -287,7 +284,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("PacienteId1");
 
-                    b.ToTable("Prontuarios");
+                    b.ToTable("Prontuarios", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Raca", b =>
@@ -309,7 +306,7 @@ namespace VetCrm.Migrations
 
                     b.HasIndex("EspecieId");
 
-                    b.ToTable("Racas");
+                    b.ToTable("Racas", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Vacina", b =>
@@ -330,7 +327,7 @@ namespace VetCrm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vacinas");
+                    b.ToTable("Vacinas", (string)null);
                 });
 
             modelBuilder.Entity("Veterinario", b =>
@@ -355,7 +352,7 @@ namespace VetCrm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Veterinarios");
+                    b.ToTable("Veterinarios", (string)null);
                 });
 
             modelBuilder.Entity("Proprietario", b =>

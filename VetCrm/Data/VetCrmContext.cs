@@ -19,6 +19,12 @@ namespace VetCrm.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Proprietario>()
+                .HasOne(p => p.Endereco)
+                .WithMany()
+                .HasForeignKey(p => p.EnderecoId)
+                .IsRequired(false);
+
             modelBuilder.Entity<Paciente>()
                 .HasOne(p => p.Raca)
                 .WithMany()
@@ -55,6 +61,7 @@ namespace VetCrm.Data
                 .HasForeignKey(pv => pv.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+        public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<VetCrm.Models.Contato> Contato { get; set; } = default!;
     }
 }

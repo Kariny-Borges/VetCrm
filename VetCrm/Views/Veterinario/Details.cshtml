@@ -1,36 +1,28 @@
 @model Veterinario
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Veterinario";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Veterinario</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CRMV)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CRMV)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Especialidade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Especialidade)
-        </dd>
-    </dl>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Detalhes do Veterinario</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">Nome</dt>
+            <dd class="col-sm-8">@Model.Nome</dd>
+            <dt class="col-sm-4">CRMV</dt>
+            <dd class="col-sm-8">@Model.CRMV</dd>
+            <dt class="col-sm-4">Especialidade</dt>
+            <dd class="col-sm-8">@Model.Especialidade</dd>
+        </dl>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-success">Editar</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
 </div>

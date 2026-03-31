@@ -35,7 +35,7 @@
 
             <div class="form-group mb-3">
                 <label asp-for="Sexo">Sexo</label>
-                <select asp-for="Sexo" class="form-control">
+                <select asp-for="Sexo" class="form-select">
                     <option value="">Selecione...</option>
                     <option value="Macho">Macho</option>
                     <option value="Fêmea">Fêmea</option>
@@ -51,21 +51,22 @@
 
             <div class="form-group mb-3">
                 <label asp-for="ProprietarioId">Proprietário</label>
-                <select asp-for="ProprietarioId" class="form-control" asp-items="ViewBag.ProprietarioId">
+                <select asp-for="ProprietarioId" class="form-select" asp-items="ViewBag.ProprietarioId">
                     <option value="">Selecione o proprietário...</option>
                 </select>
+                <span asp-validation-for="ProprietarioId" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="EspecieId">Espécie</label>
-                <select asp-for="EspecieId" class="form-control" asp-items="ViewBag.EspecieId">
+                <select asp-for="EspecieId" class="form-select" asp-items="ViewBag.EspecieId">
                     <option value="">Selecione a espécie...</option>
                 </select>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="RacaId">Raça</label>
-                <select asp-for="RacaId" class="form-control" asp-items="ViewBag.RacaId">
+                <select asp-for="RacaId" class="form-select" asp-items="ViewBag.RacaId">
                     <option value="">Selecione a raça...</option>
                 </select>
             </div>

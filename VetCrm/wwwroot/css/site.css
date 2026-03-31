@@ -137,20 +137,3 @@ a {
     a:hover {
         color: var(--cor-primaria-escura);
     }
-
-/* ===== FOOTER ===== */
-.footer {
-    background-color: var(--cor-nav-fundo) !important;
-    border-top: 2px solid var(--cor-primaria) !important;
-    color: var(--cor-nav-texto) !important;
-    padding: 12px 0;
-}
-
-/* ===== CONTAINER PRINCIPAL ===== */
-.container main {
-    background-color: var(--cor-card);
-    border-radius: 10px;
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    margin-top: 10px;
-}
