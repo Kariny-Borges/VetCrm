@@ -1,0 +1,79 @@
+@model VetCrm.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalhes do Usuário";
+}
+
+<h1>Detalhes do Usuário</h1>
+
+<div class="card mb-4" style="max-width: 500px">
+    <div class="card-body">
+        <p><strong>Login:</strong> @Model.Login</p>
+        <p><strong>Nome:</strong> @Model.Nome</p>
+        <p><strong>Tipo:</strong> @(Model.TipoPessoa == VetCrm.Models.TipoPessoa.PF ? "Pessoa Fisica" : "Pessoa Juridica")</p>
+        <p><strong>@(Model.TipoPessoa == VetCrm.Models.TipoPessoa.PF ? "CPF" : "CNPJ"):</strong> @Model.Documento</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Telefone:</strong> @Model.Telefone</p>
+        <p><strong>Perfil:</strong> @Model.Perfil</p>
+        @if (Model.Endereco != null)
+        {
+            <p><strong>Endereco:</strong> @Model.Endereco.Logradouro, @Model.Endereco.Numero - @Model.Endereco.Bairro</p>
+            <p><strong>Cidade:</strong> @Model.Endereco.Cidade / @Model.Endereco.Estado - CEP: @Model.Endereco.CEP</p>
+        }
+        else
+        {
+            <p><strong>Endereco:</strong> <span class="text-muted">Nao informado</span></p>
+        }
+    </div>
+</div>
+
+<h4>Estabelecimentos Vinculados</h4>
+
+@if (Model.UsuarioEstabelecimentos.Any())
+{
+    <table class="table table-striped" style="max-width: 500px">
+        <thead>
+            <tr>
+                <th>Estabelecimento</th>
+                <th>Data Vínculo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ue in Model.UsuarioEstabelecimentos)
+            {
+                <tr>
+                    <td>@ue.Estabelecimento?.Nome</td>
+                    <td>@ue.DataVinculo.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <form asp-action="RemoverEstabelecimento" method="post">
+                            <input type="hidden" name="usuarioEstabelecimentoId" value="@ue.Id" />
+                            <input type="hidden" name="usuarioId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">Nenhum estabelecimento vinculado.</p>
+}
+
+<h5 class="mt-3">Adicionar Estabelecimento</h5>
+<form asp-action="AdicionarEstabelecimento" method="post" class="d-flex gap-2" style="max-width: 500px">
+    <input type="hidden" name="usuarioId" value="@Model.Id" />
+    <select name="estabelecimentoId" class="form-select">
+        @foreach (var e in ViewBag.Estabelecimentos as List<VetCrm.Models.Estabelecimento> ?? new())
+        {
+            <option value="@e.Id">@e.Nome</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-success">Vincular</button>
+</form>
+
+<br />
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>

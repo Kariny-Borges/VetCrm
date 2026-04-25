@@ -60,8 +60,39 @@ namespace VetCrm.Data
                 .WithMany(p => p.PacienteVacinas)
                 .HasForeignKey(pv => pv.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Usuario → Endereco
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Endereco)
+                .WithMany()
+                .HasForeignKey(u => u.EnderecoId)
+                .IsRequired(false);
+
+            // Estabelecimento → Endereco
+            modelBuilder.Entity<Estabelecimento>()
+                .HasOne(e => e.Endereco)
+                .WithMany()
+                .HasForeignKey(e => e.EnderecoId)
+                .IsRequired(false);
+
+            // UsuarioEstabelecimento → Usuario
+            modelBuilder.Entity<UsuarioEstabelecimento>()
+                .HasOne(ue => ue.Usuario)
+                .WithMany(u => u.UsuarioEstabelecimentos)
+                .HasForeignKey(ue => ue.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // UsuarioEstabelecimento → Estabelecimento
+            modelBuilder.Entity<UsuarioEstabelecimento>()
+                .HasOne(ue => ue.Estabelecimento)
+                .WithMany(e => e.UsuarioEstabelecimentos)
+                .HasForeignKey(ue => ue.EstabelecimentoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<VetCrm.Models.Contato> Contato { get; set; } = default!;
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Estabelecimento> Estabelecimentos { get; set; }
+        public DbSet<UsuarioEstabelecimento> UsuarioEstabelecimentos { get; set; }
     }
 }
