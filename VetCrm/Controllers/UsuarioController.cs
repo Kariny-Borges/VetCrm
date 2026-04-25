@@ -16,11 +16,19 @@ namespace VetCrm.Controllers
         }
 
         // GET: Usuario - lista todos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            var usuarios = _context.Usuarios
-                .Include(u => u.Endereco);
-            return View(await usuarios.ToListAsync());
+            var query = _context.Usuarios
+                .Include(u => u.Endereco)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(u => u.Nome.Contains(busca) || u.Email.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         // GET: Usuario/Details/
@@ -42,16 +50,15 @@ namespace VetCrm.Controllers
         }
 
         // GET: Usuario/Create - abre o formulario
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
             return View();
         }
 
         // POST: Usuario/Create - salva no banco
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Documento,Telefone,Email,Login,Senha,TipoPessoa,Perfil")] Usuario usuario, Endereco endereco, int? estabelecimentoId)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Documento,Telefone,Email,Login,Senha,TipoPessoa,Perfil")] Usuario usuario, Endereco endereco)
         {
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
@@ -59,7 +66,6 @@ namespace VetCrm.Controllers
 
             if (ModelState.IsValid)
             {
-                // Salva o endereco se pelo menos o logradouro foi preenchido
                 if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                 {
                     _context.Enderecos.Add(endereco);
@@ -69,23 +75,9 @@ namespace VetCrm.Controllers
 
                 _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
-
-                // Vincula estabelecimento se selecionado
-                if (estabelecimentoId.HasValue && estabelecimentoId.Value > 0)
-                {
-                    _context.UsuarioEstabelecimentos.Add(new UsuarioEstabelecimento
-                    {
-                        UsuarioId = usuario.Id,
-                        EstabelecimentoId = estabelecimentoId.Value,
-                        DataVinculo = DateTime.Now
-                    });
-                    await _context.SaveChangesAsync();
-                }
-
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
             return View(usuario);
         }
 
@@ -120,26 +112,24 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    // Atualiza ou cria o endereco
                     if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                     {
                         if (usuario.EnderecoId.HasValue && usuario.EnderecoId.Value > 0)
                         {
-                            // Atualiza endereco existente
                             var enderecoExistente = await _context.Enderecos.FindAsync(usuario.EnderecoId.Value);
                             if (enderecoExistente != null)
                             {
+                                enderecoExistente.CEP = endereco.CEP;
                                 enderecoExistente.Logradouro = endereco.Logradouro;
                                 enderecoExistente.Numero = endereco.Numero;
+                                enderecoExistente.Complemento = endereco.Complemento;
                                 enderecoExistente.Bairro = endereco.Bairro;
                                 enderecoExistente.Cidade = endereco.Cidade;
                                 enderecoExistente.Estado = endereco.Estado;
-                                enderecoExistente.CEP = endereco.CEP;
                             }
                         }
                         else
                         {
-                            // Cria novo endereco
                             _context.Enderecos.Add(endereco);
                             await _context.SaveChangesAsync();
                             usuario.EnderecoId = endereco.Id;
@@ -182,7 +172,17 @@ namespace VetCrm.Controllers
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null) _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir este usuário porque ele possui estabelecimentos vinculados.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

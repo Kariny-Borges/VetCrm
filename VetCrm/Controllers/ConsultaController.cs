@@ -20,10 +20,17 @@ namespace VetCrm.Controllers
         }
 
         // GET: Consulta
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            var vetCrmContext = _context.Consultas.Include(c => c.Paciente).Include(c => c.Veterinario);
-            return View(await vetCrmContext.ToListAsync());
+            var query = _context.Consultas.Include(c => c.Paciente).Include(c => c.Veterinario).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(c => c.Paciente.Nome.Contains(busca) || c.Veterinario.Nome.Contains(busca) || c.Observacoes.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         // GET: Consulta/Details/5
@@ -158,7 +165,16 @@ namespace VetCrm.Controllers
                 _context.Consultas.Remove(consulta);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir esta consulta porque ela possui prontuário vinculado.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

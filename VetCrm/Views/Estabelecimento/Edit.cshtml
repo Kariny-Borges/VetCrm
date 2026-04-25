@@ -23,16 +23,47 @@
 
             <div class="form-group mb-3">
                 <label asp-for="CNPJ">CNPJ</label>
-                <input asp-for="CNPJ" class="form-control" />
+                <input asp-for="CNPJ" class="form-control mask-cnpj" maxlength="18" />
                 <span asp-validation-for="CNPJ" class="text-danger"></span>
             </div>
 
+            <input type="hidden" asp-for="EnderecoId" />
+            <hr />
+            <h5>Endereco</h5>
+
+            <div class="row">
+                <div class="col-md-4 form-group mb-3">
+                    <label>CEP</label>
+                    <input name="endereco.CEP" id="cep" class="form-control mask-cep" value="@Model?.Endereco?.CEP" maxlength="9" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 form-group mb-3">
+                    <label>Logradouro</label>
+                    <input name="endereco.Logradouro" id="logradouro" class="form-control" value="@Model?.Endereco?.Logradouro" />
+                </div>
+                <div class="col-md-4 form-group mb-3">
+                    <label>Numero</label>
+                    <input name="endereco.Numero" class="form-control" value="@Model?.Endereco?.Numero" />
+                </div>
+            </div>
             <div class="form-group mb-3">
-                <label asp-for="EnderecoId">Endereco</label>
-                <select asp-for="EnderecoId" class="form-select" asp-items="ViewBag.EnderecoId">
-                    <option value="">Nenhum (opcional)</option>
-                </select>
-                <span asp-validation-for="EnderecoId" class="text-danger"></span>
+                <label>Complemento</label>
+                <input name="endereco.Complemento" id="complemento" class="form-control" value="@Model?.Endereco?.Complemento" />
+            </div>
+            <div class="row">
+                <div class="col-md-4 form-group mb-3">
+                    <label>Bairro</label>
+                    <input name="endereco.Bairro" id="bairro" class="form-control" value="@Model?.Endereco?.Bairro" />
+                </div>
+                <div class="col-md-5 form-group mb-3">
+                    <label>Cidade</label>
+                    <input name="endereco.Cidade" id="cidade" class="form-control" value="@Model?.Endereco?.Cidade" />
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <label>Estado</label>
+                    <input name="endereco.Estado" id="uf" class="form-control" value="@Model?.Endereco?.Estado" maxlength="2" />
+                </div>
             </div>
 
             <div class="d-flex gap-2">

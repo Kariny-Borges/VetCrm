@@ -16,11 +16,19 @@ namespace VetCrm.Controllers
         }
 
         // GET: Estabelecimento
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            var estabelecimentos = _context.Estabelecimentos
-                .Include(e => e.Endereco);
-            return View(await estabelecimentos.ToListAsync());
+            var query = _context.Estabelecimentos
+                .Include(e => e.Endereco)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(e => e.Nome.Contains(busca) || e.CNPJ.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         // GET: Estabelecimento/Details/5
@@ -40,25 +48,31 @@ namespace VetCrm.Controllers
         // GET: Estabelecimento/Create
         public IActionResult Create()
         {
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro");
             return View();
         }
 
         // POST: Estabelecimento/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,CNPJ,EnderecoId")] Estabelecimento estabelecimento)
+        public async Task<IActionResult> Create([Bind("Id,Nome,CNPJ")] Estabelecimento estabelecimento, Endereco endereco)
         {
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
+            ModelState.Remove("endereco.Id");
 
             if (ModelState.IsValid)
             {
+                if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                {
+                    _context.Enderecos.Add(endereco);
+                    await _context.SaveChangesAsync();
+                    estabelecimento.EnderecoId = endereco.Id;
+                }
+
                 _context.Add(estabelecimento);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", estabelecimento.EnderecoId);
             return View(estabelecimento);
         }
 
@@ -67,27 +81,51 @@ namespace VetCrm.Controllers
         {
             if (id == null) return NotFound();
 
-            var estabelecimento = await _context.Estabelecimentos.FindAsync(id);
+            var estabelecimento = await _context.Estabelecimentos.Include(e => e.Endereco).FirstOrDefaultAsync(e => e.Id == id);
             if (estabelecimento == null) return NotFound();
 
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", estabelecimento.EnderecoId);
             return View(estabelecimento);
         }
 
         // POST: Estabelecimento/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CNPJ,EnderecoId")] Estabelecimento estabelecimento)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CNPJ,EnderecoId")] Estabelecimento estabelecimento, Endereco endereco)
         {
             if (id != estabelecimento.Id) return NotFound();
 
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
+            ModelState.Remove("endereco.Id");
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                    {
+                        if (estabelecimento.EnderecoId.HasValue && estabelecimento.EnderecoId.Value > 0)
+                        {
+                            var enderecoExistente = await _context.Enderecos.FindAsync(estabelecimento.EnderecoId.Value);
+                            if (enderecoExistente != null)
+                            {
+                                enderecoExistente.CEP = endereco.CEP;
+                                enderecoExistente.Logradouro = endereco.Logradouro;
+                                enderecoExistente.Numero = endereco.Numero;
+                                enderecoExistente.Complemento = endereco.Complemento;
+                                enderecoExistente.Bairro = endereco.Bairro;
+                                enderecoExistente.Cidade = endereco.Cidade;
+                                enderecoExistente.Estado = endereco.Estado;
+                            }
+                        }
+                        else
+                        {
+                            _context.Enderecos.Add(endereco);
+                            await _context.SaveChangesAsync();
+                            estabelecimento.EnderecoId = endereco.Id;
+                        }
+                    }
+
                     _context.Update(estabelecimento);
                     await _context.SaveChangesAsync();
                 }
@@ -98,7 +136,6 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnderecoId"] = new SelectList(_context.Enderecos, "Id", "Logradouro", estabelecimento.EnderecoId);
             return View(estabelecimento);
         }
 
@@ -123,7 +160,17 @@ namespace VetCrm.Controllers
         {
             var estabelecimento = await _context.Estabelecimentos.FindAsync(id);
             if (estabelecimento != null) _context.Estabelecimentos.Remove(estabelecimento);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir este estabelecimento porque ele possui usuários vinculados.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

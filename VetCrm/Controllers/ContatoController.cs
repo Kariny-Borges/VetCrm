@@ -145,7 +145,16 @@ namespace VetCrm.Controllers
                 _context.Contato.Remove(contato);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir este contato porque ele possui registros vinculados.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

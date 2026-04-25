@@ -14,9 +14,17 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            return View(await _context.Vacinas.ToListAsync());
+            var query = _context.Vacinas.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(v => v.Nome.Contains(busca) || v.Descricao.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         public IActionResult Create()
@@ -67,7 +75,17 @@ namespace VetCrm.Controllers
         {
             var vacina = await _context.Vacinas.FindAsync(id);
             if (vacina != null) _context.Vacinas.Remove(vacina);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir esta vacina porque existem pacientes vacinados com ela.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

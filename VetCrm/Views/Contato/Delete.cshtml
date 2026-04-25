@@ -13,6 +13,13 @@
     Tem certeza que deseja excluir este contato?
 </div>
 
+@if (TempData["ErroExclusao"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErroExclusao"]
+    </div>
+}
+
 <div class="row">
     <div class="col-md-6">
         <dl class="row">

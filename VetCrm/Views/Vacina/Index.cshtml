@@ -9,11 +9,21 @@
     <a asp-action="Create" class="btn btn-primary">+ Nova Vacina</a>
 </div>
 
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" name="busca" value="@ViewData["BuscaAtual"]" class="form-control" placeholder="Buscar por nome ou descricao..." />
+        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+        @if (!string.IsNullOrEmpty(ViewData["BuscaAtual"]?.ToString()))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpar</a>
+        }
+    </div>
+</form>
+
 <table class="table table-hover">
     <thead>
         <tr>
             <th>Nome</th>
-            <th>Descricao</th>
             <th>Acoes</th>
         </tr>
     </thead>
@@ -22,7 +32,6 @@
         {
             <tr>
                 <td>@item.Nome</td>
-                <td>@item.Descricao</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>

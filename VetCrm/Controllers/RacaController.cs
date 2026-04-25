@@ -15,10 +15,17 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            var vetCrmContext = _context.Racas.Include(r => r.Especie);
-            return View(await vetCrmContext.ToListAsync());
+            var query = _context.Racas.Include(r => r.Especie).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(r => r.Nome.Contains(busca) || r.Especie.Nome.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -96,7 +103,17 @@ namespace VetCrm.Controllers
         {
             var raca = await _context.Racas.FindAsync(id);
             if (raca != null) _context.Racas.Remove(raca);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir esta raça porque existem pacientes vinculados a ela.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

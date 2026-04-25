@@ -20,9 +20,17 @@ namespace VetCrm.Controllers
         }
 
         // GET: Especies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            return View(await _context.Especies.ToListAsync());
+            var query = _context.Especies.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(e => e.Nome.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         // GET: Especies/Details/5
@@ -145,7 +153,16 @@ namespace VetCrm.Controllers
                 _context.Especies.Remove(especie);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir esta espécie porque existem raças ou pacientes vinculados a ela.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

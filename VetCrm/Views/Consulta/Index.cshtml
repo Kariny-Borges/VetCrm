@@ -9,6 +9,17 @@
     <a asp-action="Create" class="btn btn-primary">+ Nova Consulta</a>
 </div>
 
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" name="busca" value="@ViewData["BuscaAtual"]" class="form-control" placeholder="Buscar por paciente ou veterinario..." />
+        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+        @if (!string.IsNullOrEmpty(ViewData["BuscaAtual"]?.ToString()))
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpar</a>
+        }
+    </div>
+</form>
+
 <table class="table table-hover">
     <thead>
         <tr>
@@ -16,7 +27,6 @@
             <th>Tipo</th>
             <th>Paciente</th>
             <th>Veterinario</th>
-            <th>Observacoes</th>
             <th>Acoes</th>
         </tr>
     </thead>
@@ -28,7 +38,6 @@
                 <td>@item.TipoConsulta</td>
                 <td>@item.Paciente?.Nome</td>
                 <td>@item.Veterinario?.Nome</td>
-                <td>@item.Observacoes</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>

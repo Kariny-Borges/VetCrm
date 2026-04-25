@@ -36,7 +36,7 @@
 
     <div class="mb-3">
         <label asp-for="Documento" class="form-label" id="labelDocumento">CPF</label>
-        <input asp-for="Documento" class="form-control" id="inputDocumento" placeholder="000.000.000-00" maxlength="18" />
+        <input asp-for="Documento" class="form-control mask-cpf" id="inputDocumento" placeholder="000.000.000-00" maxlength="18" />
         <span asp-validation-for="Documento" class="text-danger"></span>
     </div>
 
@@ -47,7 +47,7 @@
 
     <div class="mb-3">
         <label asp-for="Telefone" class="form-label">Telefone</label>
-        <input asp-for="Telefone" class="form-control" />
+        <input asp-for="Telefone" class="form-control mask-telefone" placeholder="(00) 00000-0000" maxlength="15" />
     </div>
 
     <div class="mb-3">
@@ -61,47 +61,38 @@
     <h4>Endereco</h4>
 
     <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">CEP</label>
+            <input name="endereco.CEP" id="cep" class="form-control mask-cep" placeholder="00000-000" maxlength="9" />
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-8 mb-3">
             <label class="form-label">Logradouro</label>
-            <input name="Endereco.Logradouro" class="form-control" value="@Model?.Endereco?.Logradouro" />
+            <input name="endereco.Logradouro" id="logradouro" class="form-control" placeholder="Rua, Av, Travessa..." />
         </div>
         <div class="col-md-4 mb-3">
             <label class="form-label">Numero</label>
-            <input name="Endereco.Numero" class="form-control" value="@Model?.Endereco?.Numero" />
+            <input name="endereco.Numero" class="form-control" placeholder="123" />
         </div>
     </div>
-
+    <div class="mb-3">
+        <label class="form-label">Complemento</label>
+        <input name="endereco.Complemento" id="complemento" class="form-control" placeholder="Apto, Bloco, Sala... (opcional)" />
+    </div>
     <div class="row">
         <div class="col-md-4 mb-3">
             <label class="form-label">Bairro</label>
-            <input name="Endereco.Bairro" class="form-control" value="@Model?.Endereco?.Bairro" />
+            <input name="endereco.Bairro" id="bairro" class="form-control" placeholder="Bairro" />
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-5 mb-3">
             <label class="form-label">Cidade</label>
-            <input name="Endereco.Cidade" class="form-control" value="@Model?.Endereco?.Cidade" />
+            <input name="endereco.Cidade" id="cidade" class="form-control" placeholder="Cidade" />
         </div>
-        <div class="col-md-2 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Estado</label>
-            <input name="Endereco.Estado" class="form-control" value="@Model?.Endereco?.Estado" maxlength="2" />
+            <input name="endereco.Estado" id="uf" class="form-control" placeholder="UF" maxlength="2" />
         </div>
-        <div class="col-md-2 mb-3">
-            <label class="form-label">CEP</label>
-            <input name="Endereco.CEP" class="form-control" value="@Model?.Endereco?.CEP" placeholder="00000-000" maxlength="9" />
-        </div>
-    </div>
-
-    <hr />
-    <h4>Estabelecimento</h4>
-
-    <div class="mb-3">
-        <label class="form-label">Vincular a um Estabelecimento</label>
-        <select name="EstabelecimentoId" class="form-select">
-            <option value="">-- Nenhum --</option>
-            @foreach (var e in ViewBag.Estabelecimentos as List<VetCrm.Models.Estabelecimento> ?? new())
-            {
-                <option value="@e.Id">@e.Nome</option>
-            }
-        </select>
     </div>
 
     <button type="submit" class="btn btn-primary">Salvar</button>
@@ -120,11 +111,17 @@
                     labelDoc.textContent = 'CNPJ';
                     inputDoc.placeholder = '00.000.000/0000-00';
                     inputDoc.maxLength = 18;
+                    inputDoc.classList.remove('mask-cpf');
+                    inputDoc.classList.add('mask-cnpj');
                 } else {
                     labelDoc.textContent = 'CPF';
                     inputDoc.placeholder = '000.000.000-00';
                     inputDoc.maxLength = 14;
+                    inputDoc.classList.remove('mask-cnpj');
+                    inputDoc.classList.add('mask-cpf');
                 }
+                // Limpa o valor ao trocar o tipo para evitar formato errado
+                inputDoc.value = '';
             }
 
             tipoPessoa.addEventListener('change', atualizarDocumento);

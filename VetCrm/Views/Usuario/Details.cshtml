@@ -66,6 +66,7 @@ else
 <form asp-action="AdicionarEstabelecimento" method="post" class="d-flex gap-2" style="max-width: 500px">
     <input type="hidden" name="usuarioId" value="@Model.Id" />
     <select name="estabelecimentoId" class="form-select">
+        <option value="">-- Selecione --</option>
         @foreach (var e in ViewBag.Estabelecimentos as List<VetCrm.Models.Estabelecimento> ?? new())
         {
             <option value="@e.Id">@e.Nome</option>

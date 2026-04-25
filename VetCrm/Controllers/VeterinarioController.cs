@@ -19,9 +19,17 @@ namespace VetCrm.Controllers
         }
 
         // GET: Veterinario
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            return View(await _context.Veterinarios.ToListAsync());
+            var query = _context.Veterinarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(v => v.Nome.Contains(busca) || v.CRMV.Contains(busca) || v.Especialidade.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         // GET: Veterinario/Details/5
@@ -144,7 +152,16 @@ namespace VetCrm.Controllers
                 _context.Veterinarios.Remove(veterinario);
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir este veterinário porque ele possui consultas vinculadas.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

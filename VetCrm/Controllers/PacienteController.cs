@@ -19,13 +19,21 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca)
         {
-            var vetCrmContext = _context.Pacientes
+            var query = _context.Pacientes
                 .Include(p => p.Especie)
                 .Include(p => p.Proprietario)
-                .Include(p => p.Raca);
-            return View(await vetCrmContext.ToListAsync());
+                .Include(p => p.Raca)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                query = query.Where(p => p.Nome.Contains(busca) || p.Proprietario.Nome.Contains(busca));
+            }
+
+            ViewData["BuscaAtual"] = busca;
+            return View(await query.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -127,7 +135,17 @@ namespace VetCrm.Controllers
         {
             var paciente = await _context.Pacientes.FindAsync(id);
             if (paciente != null) _context.Pacientes.Remove(paciente);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErroExclusao"] = "Não é possível excluir este paciente porque ele possui consultas, prontuários ou vacinas vinculadas.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
