@@ -20,34 +20,52 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Cadastros
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Proprietario" asp-action="Index">Proprietários</a></li>
-                                <li><a class="dropdown-item" asp-controller="Paciente" asp-action="Index">Pacientes</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-controller="Especies" asp-action="Index">Espécies</a></li>
-                                <li><a class="dropdown-item" asp-controller="Raca" asp-action="Index">Raças</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuários</a></li>
-                                <li><a class="dropdown-item" asp-controller="Estabelecimento" asp-action="Index">Estabelecimentos</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                Clínica
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Veterinario" asp-action="Index">Veterinários</a></li>
-                                <li><a class="dropdown-item" asp-controller="Consulta" asp-action="Index">Consultas</a></li>
-                                <li><a class="dropdown-item" asp-controller="Vacina" asp-action="Index">Vacinas</a></li>
-                            </ul>
-                        </li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    Cadastros
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Proprietario" asp-action="Index">Proprietários</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Paciente" asp-action="Index">Pacientes</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Especies" asp-action="Index">Espécies</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Raca" asp-action="Index">Raças</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuários</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Estabelecimento" asp-action="Index">Estabelecimentos</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    Clínica
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Veterinario" asp-action="Index">Veterinários</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Consulta" asp-action="Index">Consultas</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Vacina" asp-action="Index">Vacinas</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="navbar-text nav-greeting me-3">Olá, <strong>@User.Identity.Name</strong></span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-link nav-link">Sair</button>
+                                </form>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

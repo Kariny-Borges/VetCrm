@@ -1,0 +1,47 @@
+@model VetCrm.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4">Acesso ao VetCrm</h3>
+
+                @if (TempData["Mensagem"] != null)
+                {
+                    <div class="alert alert-success">@TempData["Mensagem"]</div>
+                }
+
+                <form asp-action="Login" method="post" autocomplete="off">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Login" class="form-label"></label>
+                        <input asp-for="Login" class="form-control" autocomplete="off" autofocus />
+                        <span asp-validation-for="Login" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Senha" class="form-label"></label>
+                        <input asp-for="Senha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="Senha" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a asp-action="EsqueciSenha">Esqueci minha senha</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

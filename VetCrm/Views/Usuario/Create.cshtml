@@ -6,8 +6,15 @@
 
 <h1>Novo Usuario</h1>
 
-<form asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@if (ViewBag.ErrosDebug != null && !string.IsNullOrWhiteSpace((string)ViewBag.ErrosDebug))
+{
+    <div class="alert alert-warning">
+        <strong>Diagnóstico:</strong> @ViewBag.ErrosDebug
+    </div>
+}
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
         <label asp-for="Login" class="form-label">Login</label>

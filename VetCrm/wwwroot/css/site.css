@@ -39,6 +39,11 @@ body {
         color: var(--cor-primaria) !important;
     }
 
+.nav-greeting {
+    color: var(--cor-primaria) !important;
+    font-weight: 500;
+}
+
 .dropdown-menu {
     background-color: #16213e;
     border: 1px solid var(--cor-primaria);

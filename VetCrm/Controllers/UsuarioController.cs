@@ -62,21 +62,36 @@ namespace VetCrm.Controllers
         {
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
-            ModelState.Remove("endereco.Id");
+            // Endereço é opcional: limpa qualquer erro de validação de "endereco.*"
+            foreach (var chave in ModelState.Keys.Where(k => k.StartsWith("endereco.")).ToList())
+                ModelState.Remove(chave);
 
             if (ModelState.IsValid)
             {
-                if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                try
                 {
-                    _context.Enderecos.Add(endereco);
-                    await _context.SaveChangesAsync();
-                    usuario.EnderecoId = endereco.Id;
-                }
+                    if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                    {
+                        _context.Enderecos.Add(endereco);
+                        await _context.SaveChangesAsync();
+                        usuario.EnderecoId = endereco.Id;
+                    }
 
-                _context.Usuarios.Add(usuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Usuarios.Add(usuario);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Mostra na tela qualquer exceção que aconteça ao salvar (chave duplicada, etc.)
+                    ModelState.AddModelError(string.Empty, "Erro ao salvar: " + (ex.InnerException?.Message ?? ex.Message));
+                }
             }
+
+            // Diagnóstico: junta todos os erros do ModelState pra exibir na view
+            ViewBag.ErrosDebug = string.Join(" | ", ModelState
+                .Where(x => x.Value!.Errors.Count > 0)
+                .Select(x => $"{x.Key}: {x.Value!.Errors[0].ErrorMessage}"));
 
             return View(usuario);
         }
@@ -106,7 +121,9 @@ namespace VetCrm.Controllers
 
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
-            ModelState.Remove("endereco.Id");
+            // Endereço é opcional: limpa qualquer erro de validação de "endereco.*"
+            foreach (var chave in ModelState.Keys.Where(k => k.StartsWith("endereco.")).ToList())
+                ModelState.Remove(chave);
 
             if (ModelState.IsValid)
             {
