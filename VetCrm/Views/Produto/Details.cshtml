@@ -1,11 +1,11 @@
-@model VetCrm.Models.Especie
+@model VetCrm.Models.Produto
 
 @{
-    ViewData["Title"] = "Detalhes da Especie";
+    ViewData["Title"] = "Detalhes do Produto";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Detalhes da Especie</h2>
+    <h2>Detalhes do Produto</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -14,6 +14,15 @@
         <dl class="row">
             <dt class="col-sm-4">Nome</dt>
             <dd class="col-sm-8">@Model.Nome</dd>
+
+            <dt class="col-sm-4">Categoria</dt>
+            <dd class="col-sm-8">@Model.Categoria</dd>
+
+            <dt class="col-sm-4">Quantidade</dt>
+            <dd class="col-sm-8">@Model.Quantidade</dd>
+
+            <dt class="col-sm-4">Preço</dt>
+            <dd class="col-sm-8">@Model.Preco.ToString("C")</dd>
         </dl>
 
         <div class="d-flex gap-2">

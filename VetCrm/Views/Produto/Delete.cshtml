@@ -1,16 +1,16 @@
-@model VetCrm.Models.Especie
+@model VetCrm.Models.Produto
 
 @{
-    ViewData["Title"] = "Excluir Especie";
+    ViewData["Title"] = "Excluir Produto";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Excluir Especie</h2>
+    <h2>Excluir Produto</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
 <div class="alert alert-warning">
-    Tem certeza que deseja excluir a especie <strong>@Model.Nome</strong>?
+    Tem certeza que deseja excluir o produto <strong>@Model.Nome</strong>?
 </div>
 
 <div class="row">
@@ -18,6 +18,15 @@
         <dl class="row">
             <dt class="col-sm-4">Nome</dt>
             <dd class="col-sm-8">@Model.Nome</dd>
+
+            <dt class="col-sm-4">Categoria</dt>
+            <dd class="col-sm-8">@Model.Categoria</dd>
+
+            <dt class="col-sm-4">Quantidade</dt>
+            <dd class="col-sm-8">@Model.Quantidade</dd>
+
+            <dt class="col-sm-4">Preço</dt>
+            <dd class="col-sm-8">@Model.Preco.ToString("C")</dd>
         </dl>
 
         <form asp-action="Delete">
