@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetCrm.Data;
 
@@ -11,9 +12,11 @@ using VetCrm.Data;
 namespace VetCrm.Migrations
 {
     [DbContext(typeof(VetCrmContext))]
-    partial class VetCrmContextModelSnapshot : ModelSnapshot
+    [Migration("20260524222444_ProdutoUsaCategoriaFK")]
+    partial class ProdutoUsaCategoriaFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,9 +93,6 @@ namespace VetCrm.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Valor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -103,8 +103,6 @@ namespace VetCrm.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProprietarioId");
-
-                    b.HasIndex("UsuarioId");
 
                     b.HasIndex("VeterinarioId");
 
@@ -499,9 +497,6 @@ namespace VetCrm.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EnderecoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Especialidade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -511,8 +506,6 @@ namespace VetCrm.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
 
                     b.ToTable("Veterinarios");
                 });
@@ -541,10 +534,6 @@ namespace VetCrm.Migrations
                     b.HasOne("VetCrm.Models.Proprietario", null)
                         .WithMany("Contatos")
                         .HasForeignKey("ProprietarioId");
-
-                    b.HasOne("VetCrm.Models.Usuario", null)
-                        .WithMany("Contatos")
-                        .HasForeignKey("UsuarioId");
 
                     b.HasOne("Veterinario", null)
                         .WithMany("Contatos")
@@ -688,15 +677,6 @@ namespace VetCrm.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Veterinario", b =>
-                {
-                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId");
-
-                    b.Navigation("Endereco");
-                });
-
             modelBuilder.Entity("VetCrm.Models.Consulta", b =>
                 {
                     b.Navigation("Prontuario");
@@ -730,8 +710,6 @@ namespace VetCrm.Migrations
 
             modelBuilder.Entity("VetCrm.Models.Usuario", b =>
                 {
-                    b.Navigation("Contatos");
-
                     b.Navigation("UsuarioEstabelecimentos");
                 });
 

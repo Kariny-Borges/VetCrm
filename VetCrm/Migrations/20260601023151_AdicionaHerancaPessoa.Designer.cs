@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetCrm.Data;
 
@@ -11,9 +12,11 @@ using VetCrm.Data;
 namespace VetCrm.Migrations
 {
     [DbContext(typeof(VetCrmContext))]
-    partial class VetCrmContextModelSnapshot : ModelSnapshot
+    [Migration("20260601023151_AdicionaHerancaPessoa")]
+    partial class AdicionaHerancaPessoa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

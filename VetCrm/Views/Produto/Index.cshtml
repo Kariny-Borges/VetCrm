@@ -35,7 +35,7 @@
         {
             <tr>
                 <td>@produto.Nome</td>
-                <td>@produto.Categoria</td>
+                <td>@produto.Categoria?.Nome</td>
                 <td>@produto.Quantidade</td>
                 <td>@produto.Preco.ToString("C")</td>
                 <td>

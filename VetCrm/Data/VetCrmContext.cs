@@ -17,6 +17,7 @@ namespace VetCrm.Data
         public DbSet<Vacina> Vacinas { get; set; }
         public DbSet<PacienteVacina> PacienteVacinas { get; set; }
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

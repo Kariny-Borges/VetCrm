@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
@@ -16,11 +17,11 @@ namespace VetCrm.Controllers
 
         public async Task<IActionResult> Index(string busca)
         {
-            var query = _context.Produtos.AsQueryable();
+            var query = _context.Produtos.Include(p => p.Categoria).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(busca))
             {
-                query = query.Where(p => p.Nome.Contains(busca) || p.Categoria.Contains(busca));
+                query = query.Where(p => p.Nome.Contains(busca) || p.Categoria.Nome.Contains(busca));
             }
 
             ViewData["BuscaAtual"] = busca;
@@ -29,6 +30,7 @@ namespace VetCrm.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome");
             return View();
         }
 
@@ -41,6 +43,7 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
             return View(produto);
         }
 
@@ -48,6 +51,7 @@ namespace VetCrm.Controllers
         {
             var produto = await _context.Produtos.FindAsync(id);
             if (produto == null) return NotFound();
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
             return View(produto);
         }
 
@@ -60,19 +64,24 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
             return View(produto);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _context.Produtos
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (produto == null) return NotFound();
             return View(produto);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _context.Produtos
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (produto == null) return NotFound();
             return View(produto);
         }
