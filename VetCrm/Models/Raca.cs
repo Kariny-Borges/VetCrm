@@ -1,9 +1,7 @@
 ﻿namespace VetCrm.Models
 {
-    public class Raca
+    public class Raca : EntidadeBase
     {
-        public int Id { get; set; }
-        
         public string Nome { get; set; }
 
         public int EspecieId { get; set; }

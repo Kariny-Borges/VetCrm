@@ -35,7 +35,6 @@
         <thead>
             <tr>
                 <th>Estabelecimento</th>
-                <th>Data Vínculo</th>
                 <th></th>
             </tr>
         </thead>
@@ -44,7 +43,6 @@
             {
                 <tr>
                     <td>@ue.Estabelecimento?.Nome</td>
-                    <td>@ue.DataVinculo.ToString("dd/MM/yyyy")</td>
                     <td>
                         <form asp-action="RemoverEstabelecimento" method="post">
                             <input type="hidden" name="usuarioEstabelecimentoId" value="@ue.Id" />

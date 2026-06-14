@@ -1,0 +1,36 @@
+@model VetCrm.Models.Especialidade
+
+@{
+    ViewData["Title"] = "Excluir Especialidade";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Excluir Especialidade</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
+</div>
+
+<div class="alert alert-warning">
+    Tem certeza que deseja excluir esta especialidade?
+</div>
+
+@if (TempData["ErroExclusao"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErroExclusao"]</div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">Nome</dt>
+            <dd class="col-sm-8">@Model.Nome</dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex gap-2">
+                <input type="submit" value="Excluir" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

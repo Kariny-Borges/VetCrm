@@ -12,7 +12,9 @@ namespace VetCrm.Data
         public DbSet<Especie> Especies { get; set; }
         public DbSet<Raca> Racas { get; set; }
         public DbSet<Veterinario> Veterinarios { get; set; }
+        public DbSet<Especialidade> Especialidades { get; set; }
         public DbSet<Consulta> Consultas { get; set; }
+        public DbSet<TipoConsulta> TiposConsulta { get; set; }
         public DbSet<Prontuario> Prontuarios { get; set; }
         public DbSet<Vacina> Vacinas { get; set; }
         public DbSet<PacienteVacina> PacienteVacinas { get; set; }
@@ -57,10 +59,31 @@ namespace VetCrm.Data
                 .HasForeignKey(c => c.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Consulta>()
+                .HasOne(c => c.TipoConsulta)
+                .WithMany(t => t.Consultas)
+                .HasForeignKey(c => c.TipoConsultaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Semeia os tipos de consulta com os MESMOS Ids do antigo enum (1/2/3),
+            // pra que as consultas já existentes continuem apontando pro tipo certo.
+            modelBuilder.Entity<TipoConsulta>().HasData(
+                new TipoConsulta { Id = 1, Nome = "Agendada" },
+                new TipoConsulta { Id = 2, Nome = "Emergência" },
+                new TipoConsulta { Id = 3, Nome = "Retorno" }
+            );
+
             modelBuilder.Entity<PacienteVacina>()
                 .HasOne(pv => pv.Paciente)
                 .WithMany(p => p.PacienteVacinas)
                 .HasForeignKey(pv => pv.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Veterinario → Especialidade
+            modelBuilder.Entity<Veterinario>()
+                .HasOne(v => v.Especialidade)
+                .WithMany(e => e.Veterinarios)
+                .HasForeignKey(v => v.EspecialidadeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Usuario → Endereco

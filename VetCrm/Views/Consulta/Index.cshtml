@@ -35,7 +35,7 @@
         {
             <tr>
                 <td>@item.DataConsulta.ToString("dd/MM/yyyy")</td>
-                <td>@item.TipoConsulta</td>
+                <td>@item.TipoConsulta?.Nome</td>
                 <td>@item.Paciente?.Nome</td>
                 <td>@item.Veterinario?.Nome</td>
                 <td>

@@ -22,11 +22,11 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="TipoConsulta">Tipo de Consulta</label>
-                <select asp-for="TipoConsulta" class="form-select" asp-items="Html.GetEnumSelectList<VetCrm.Models.TipoConsulta>()">
+                <label asp-for="TipoConsultaId">Tipo de Consulta</label>
+                <select asp-for="TipoConsultaId" class="form-select" asp-items="ViewBag.TipoConsultaId">
                     <option value="">Selecione...</option>
                 </select>
-                <span asp-validation-for="TipoConsulta" class="text-danger"></span>
+                <span asp-validation-for="TipoConsultaId" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">

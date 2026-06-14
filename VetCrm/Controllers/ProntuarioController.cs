@@ -36,6 +36,7 @@ namespace VetCrm.Controllers
 
             var prontuario = await _context.Prontuarios
                 .Include(p => p.Consulta)
+                    .ThenInclude(c => c.Paciente)
                 .Include(p => p.Paciente)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (prontuario == null)
@@ -49,8 +50,8 @@ namespace VetCrm.Controllers
         // GET: Prontuario/Create
         public IActionResult Create()
         {
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas, "Id", "Id");
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id");
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo");
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome");
             return View();
         }
 
@@ -67,8 +68,8 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas, "Id", "Id", prontuario.ConsultaId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", prontuario.PacienteId);
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", prontuario.ConsultaId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", prontuario.PacienteId);
             return View(prontuario);
         }
 
@@ -85,8 +86,8 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas, "Id", "Id", prontuario.ConsultaId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", prontuario.PacienteId);
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", prontuario.ConsultaId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", prontuario.PacienteId);
             return View(prontuario);
         }
 
@@ -122,8 +123,8 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas, "Id", "Id", prontuario.ConsultaId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", prontuario.PacienteId);
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", prontuario.ConsultaId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", prontuario.PacienteId);
             return View(prontuario);
         }
 

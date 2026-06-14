@@ -1,9 +1,9 @@
-﻿namespace VetCrm.Models
+namespace VetCrm.Models
 {
-    public enum TipoConsulta
+    public class TipoConsulta : EntidadeBase
     {
-        Agendada = 1,
-        Emergencia = 2,
-        Retorno = 3
+        public string Nome { get; set; } = string.Empty;
+
+        public List<Consulta> Consultas { get; set; } = new List<Consulta>();
     }
 }

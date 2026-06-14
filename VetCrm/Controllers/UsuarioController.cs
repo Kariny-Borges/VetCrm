@@ -216,8 +216,7 @@ namespace VetCrm.Controllers
                 _context.UsuarioEstabelecimentos.Add(new UsuarioEstabelecimento
                 {
                     UsuarioId = usuarioId,
-                    EstabelecimentoId = estabelecimentoId,
-                    DataVinculo = DateTime.Now
+                    EstabelecimentoId = estabelecimentoId
                 });
                 await _context.SaveChangesAsync();
             }

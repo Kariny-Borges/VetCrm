@@ -21,11 +21,13 @@ namespace VetCrm.Controllers
         // GET: Veterinario
         public async Task<IActionResult> Index(string busca)
         {
-            var query = _context.Veterinarios.AsQueryable();
+            var query = _context.Veterinarios
+                .Include(v => v.Especialidade)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(busca))
             {
-                query = query.Where(v => v.Nome.Contains(busca) || v.CRMV.Contains(busca) || v.Especialidade.Contains(busca));
+                query = query.Where(v => v.Nome.Contains(busca) || v.CRMV.Contains(busca) || v.Especialidade.Nome.Contains(busca));
             }
 
             ViewData["BuscaAtual"] = busca;
@@ -41,6 +43,7 @@ namespace VetCrm.Controllers
             }
 
             var veterinario = await _context.Veterinarios
+                .Include(v => v.Especialidade)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (veterinario == null)
             {
@@ -53,6 +56,7 @@ namespace VetCrm.Controllers
         // GET: Veterinario/Create
         public IActionResult Create()
         {
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome");
             return View();
         }
 
@@ -61,7 +65,7 @@ namespace VetCrm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,CRMV,Especialidade")] Veterinario veterinario)
+        public async Task<IActionResult> Create([Bind("Id,Nome,CRMV,EspecialidadeId")] Veterinario veterinario)
         {
             if (ModelState.IsValid)
             {
@@ -69,6 +73,7 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
             return View(veterinario);
         }
 
@@ -85,6 +90,7 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
             return View(veterinario);
         }
 
@@ -93,7 +99,7 @@ namespace VetCrm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CRMV,Especialidade")] Veterinario veterinario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CRMV,EspecialidadeId")] Veterinario veterinario)
         {
             if (id != veterinario.Id)
             {
@@ -120,6 +126,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
             return View(veterinario);
         }
 
@@ -132,6 +139,7 @@ namespace VetCrm.Controllers
             }
 
             var veterinario = await _context.Veterinarios
+                .Include(v => v.Especialidade)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (veterinario == null)
             {

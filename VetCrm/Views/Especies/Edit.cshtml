@@ -1,32 +1,32 @@
-﻿@model VetCrm.Models.Especie
+@model VetCrm.Models.Especie
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Espécie";
 }
 
-<h1>Edit</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Editar Espécie</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
+</div>
 
-<h4>Especie</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Nome">Nome</label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -1,35 +1,36 @@
-﻿@model VetCrm.Models.Especie
+@model VetCrm.Models.Especie
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Excluir Espécie";
 }
 
-<h1>Delete</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Excluir Espécie</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
+</div>
 
 <div class="alert alert-warning">
-    Tem certeza que deseja excluir esta especie?
+    Tem certeza que deseja excluir esta espécie?
 </div>
 
 @if (TempData["ErroExclusao"] != null)
 {
-    <div class="alert alert-danger">
-        @TempData["ErroExclusao"]
-    </div>
+    <div class="alert alert-danger">@TempData["ErroExclusao"]</div>
 }
 
-<div>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">Nome</dt>
+            <dd class="col-sm-8">@Model.Nome</dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex gap-2">
+                <input type="submit" value="Excluir" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
 </div>

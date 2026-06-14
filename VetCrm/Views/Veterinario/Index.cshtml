@@ -35,7 +35,7 @@
             <tr>
                 <td>@item.Nome</td>
                 <td>@item.CRMV</td>
-                <td>@item.Especialidade</td>
+                <td>@item.Especialidade?.Nome</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>

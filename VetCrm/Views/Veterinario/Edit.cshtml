@@ -28,9 +28,11 @@
                     <span asp-validation-for="CRMV" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 form-group mb-3">
-                    <label asp-for="Especialidade">Especialidade</label>
-                    <input asp-for="Especialidade" class="form-control" />
-                    <span asp-validation-for="Especialidade" class="text-danger"></span>
+                    <label asp-for="EspecialidadeId">Especialidade</label>
+                    <select asp-for="EspecialidadeId" class="form-select" asp-items="ViewBag.EspecialidadeId">
+                        <option value="">Selecione a especialidade...</option>
+                    </select>
+                    <span asp-validation-for="EspecialidadeId" class="text-danger"></span>
                 </div>
             </div>
 

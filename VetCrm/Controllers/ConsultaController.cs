@@ -22,7 +22,11 @@ namespace VetCrm.Controllers
         // GET: Consulta
         public async Task<IActionResult> Index(string busca)
         {
-            var query = _context.Consultas.Include(c => c.Paciente).Include(c => c.Veterinario).AsQueryable();
+            var query = _context.Consultas
+                .Include(c => c.Paciente)
+                .Include(c => c.Veterinario)
+                .Include(c => c.TipoConsulta)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(busca))
             {
@@ -44,6 +48,7 @@ namespace VetCrm.Controllers
             var consulta = await _context.Consultas
                 .Include(c => c.Paciente)
                 .Include(c => c.Veterinario)
+                .Include(c => c.TipoConsulta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (consulta == null)
             {
@@ -56,17 +61,16 @@ namespace VetCrm.Controllers
         // GET: Consulta/Create
         public IActionResult Create()
         {
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id");
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Id");
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome");
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome");
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome");
             return View();
         }
 
         // POST: Consulta/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataConsulta,Observacoes,TipoConsulta,PacienteId,VeterinarioId")] Consulta consulta)
+        public async Task<IActionResult> Create([Bind("Id,DataConsulta,Observacoes,TipoConsultaId,PacienteId,VeterinarioId")] Consulta consulta)
         {
             if (ModelState.IsValid)
             {
@@ -74,8 +78,9 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Id", consulta.VeterinarioId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
             return View(consulta);
         }
 
@@ -92,17 +97,16 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Id", consulta.VeterinarioId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
             return View(consulta);
         }
 
         // POST: Consulta/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataConsulta,Observacoes,TipoConsulta,PacienteId,VeterinarioId")] Consulta consulta)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DataConsulta,Observacoes,TipoConsultaId,PacienteId,VeterinarioId")] Consulta consulta)
         {
             if (id != consulta.Id)
             {
@@ -129,8 +133,9 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Id", consulta.VeterinarioId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
             return View(consulta);
         }
 
@@ -145,6 +150,7 @@ namespace VetCrm.Controllers
             var consulta = await _context.Consultas
                 .Include(c => c.Paciente)
                 .Include(c => c.Veterinario)
+                .Include(c => c.TipoConsulta)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (consulta == null)
             {

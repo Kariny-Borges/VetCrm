@@ -1,8 +1,7 @@
 ﻿namespace VetCrm.Models
 {
-    public class Endereco
+    public class Endereco : EntidadeBase
     {
-        public int Id { get; set; }
         public string CEP { get; set; } = string.Empty;
         public string Logradouro { get; set; } = string.Empty;
         public string Numero { get; set; } = string.Empty;

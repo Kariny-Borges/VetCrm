@@ -1,8 +1,7 @@
 ﻿namespace VetCrm.Models
 {
-    public class Prontuario
+    public class Prontuario : EntidadeBase
     {
-        public int Id { get; set; }
         public string Descricao { get; set; }
         public string Diagnostico { get; set; }
         public string Tratamento { get; set; }

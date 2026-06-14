@@ -1,8 +1,7 @@
 ﻿namespace VetCrm.Models
 {
-    public class PacienteVacina
+    public class PacienteVacina : EntidadeBase
     {
-        public int Id { get; set; }
 
         public int PacienteId { get; set; }
         public Paciente? Paciente { get; set; }
