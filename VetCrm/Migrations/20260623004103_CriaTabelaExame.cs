@@ -5,13 +5,13 @@
 namespace VetCrm.Migrations
 {
     /// <inheritdoc />
-    public partial class AdicionaCategoria : Migration
+    public partial class CriaTabelaExame : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categorias",
+                name: "Exames",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -20,7 +20,7 @@ namespace VetCrm.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categorias", x => x.Id);
+                    table.PrimaryKey("PK_Exames", x => x.Id);
                 });
         }
 
@@ -28,7 +28,7 @@ namespace VetCrm.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Categorias");
+                name: "Exames");
         }
     }
 }

@@ -58,7 +58,7 @@ namespace VetCrm.Controllers
         // POST: Usuario/Create - salva no banco
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Documento,Telefone,Email,Login,Senha,TipoPessoa,Perfil")] Usuario usuario, Endereco endereco)
+        public async Task<IActionResult> Create([Bind("Id,Nome,CPF,Telefone,Email,Login,Senha,Perfil")] Usuario usuario, Endereco endereco)
         {
             ModelState.Remove("Endereco");
             ModelState.Remove("UsuarioEstabelecimentos");
@@ -115,7 +115,7 @@ namespace VetCrm.Controllers
         // POST: Usuario/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Documento,Telefone,Email,Login,Senha,TipoPessoa,Perfil,EnderecoId")] Usuario usuario, Endereco endereco)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CPF,Telefone,Email,Login,Senha,Perfil,EnderecoId")] Usuario usuario, Endereco endereco)
         {
             if (id != usuario.Id) return NotFound();
 

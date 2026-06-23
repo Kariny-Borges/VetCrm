@@ -1,6 +1,6 @@
 ﻿using VetCrm.Models;
 
-public class Veterinario : Pessoa   
+public class Veterinario : PessoaFisica
 {
     public string CRMV { get; set; } = string.Empty;
 

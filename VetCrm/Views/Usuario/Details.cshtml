@@ -10,8 +10,7 @@
     <div class="card-body">
         <p><strong>Login:</strong> @Model.Login</p>
         <p><strong>Nome:</strong> @Model.Nome</p>
-        <p><strong>Tipo:</strong> @(Model.TipoPessoa == VetCrm.Models.TipoPessoa.PF ? "Pessoa Fisica" : "Pessoa Juridica")</p>
-        <p><strong>@(Model.TipoPessoa == VetCrm.Models.TipoPessoa.PF ? "CPF" : "CNPJ"):</strong> @Model.Documento</p>
+        <p><strong>CPF:</strong> @Model.CPF</p>
         <p><strong>Email:</strong> @Model.Email</p>
         <p><strong>Telefone:</strong> @Model.Telefone</p>
         <p><strong>Perfil:</strong> @Model.Perfil</p>

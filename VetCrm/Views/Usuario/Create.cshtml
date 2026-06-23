@@ -35,16 +35,9 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
-        <select asp-for="TipoPessoa" class="form-select" id="tipoPessoa"
-                asp-items="Html.GetEnumSelectList<VetCrm.Models.TipoPessoa>()">
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Documento" class="form-label" id="labelDocumento">CPF</label>
-        <input asp-for="Documento" class="form-control mask-cpf" id="inputDocumento" placeholder="000.000.000-00" maxlength="18" />
-        <span asp-validation-for="Documento" class="text-danger"></span>
+        <label asp-for="CPF" class="form-label">CPF</label>
+        <input asp-for="CPF" class="form-control mask-cpf" placeholder="000.000.000-00" maxlength="14" />
+        <span asp-validation-for="CPF" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -105,34 +98,3 @@
     <button type="submit" class="btn btn-primary">Salvar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var tipoPessoa = document.getElementById('tipoPessoa');
-            var labelDoc = document.getElementById('labelDocumento');
-            var inputDoc = document.getElementById('inputDocumento');
-
-            function atualizarDocumento() {
-                if (tipoPessoa.value === '2') {
-                    labelDoc.textContent = 'CNPJ';
-                    inputDoc.placeholder = '00.000.000/0000-00';
-                    inputDoc.maxLength = 18;
-                    inputDoc.classList.remove('mask-cpf');
-                    inputDoc.classList.add('mask-cnpj');
-                } else {
-                    labelDoc.textContent = 'CPF';
-                    inputDoc.placeholder = '000.000.000-00';
-                    inputDoc.maxLength = 14;
-                    inputDoc.classList.remove('mask-cnpj');
-                    inputDoc.classList.add('mask-cpf');
-                }
-                // Limpa o valor ao trocar o tipo para evitar formato errado
-                inputDoc.value = '';
-            }
-
-            tipoPessoa.addEventListener('change', atualizarDocumento);
-            atualizarDocumento();
-        });
-    </script>
-}

@@ -82,35 +82,20 @@ namespace VetCrm.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EstabelecimentoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProprietarioId")
+                    b.Property<int?>("PessoaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Valor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VeterinarioId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EstabelecimentoId");
-
-                    b.HasIndex("ProprietarioId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.HasIndex("VeterinarioId");
+                    b.HasIndex("PessoaId");
 
                     b.ToTable("Contato");
                 });
@@ -190,7 +175,7 @@ namespace VetCrm.Migrations
                     b.ToTable("Especies");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
+            modelBuilder.Entity("VetCrm.Models.Exame", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,25 +183,13 @@ namespace VetCrm.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CNPJ")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EnderecoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TipoPessoa")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EnderecoId");
-
-                    b.ToTable("Estabelecimentos");
+                    b.ToTable("Exames");
                 });
 
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>
@@ -293,6 +266,66 @@ namespace VetCrm.Migrations
                     b.ToTable("PacienteVacinas");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.Perfil", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Perfis");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nome = "Recepção"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nome = "Administrativo"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nome = "Financeiro"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nome = "Gerente"
+                        });
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Pessoa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EnderecoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnderecoId");
+
+                    b.ToTable("Pessoas", (string)null);
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("VetCrm.Models.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -365,38 +398,6 @@ namespace VetCrm.Migrations
                     b.ToTable("Prontuarios");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CPF")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("EnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoPessoa")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
-
-                    b.ToTable("Proprietarios");
-                });
-
             modelBuilder.Entity("VetCrm.Models.Raca", b =>
                 {
                     b.Property<int>("Id")
@@ -451,54 +452,6 @@ namespace VetCrm.Migrations
                             Id = 3,
                             Nome = "Retorno"
                         });
-                });
-
-            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Documento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Perfil")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Senha")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoPessoa")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
-
-                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("VetCrm.Models.UsuarioEstabelecimento", b =>
@@ -556,38 +509,87 @@ namespace VetCrm.Migrations
                     b.ToTable("Vacinas");
                 });
 
-            modelBuilder.Entity("Veterinario", b =>
+            modelBuilder.Entity("VetCrm.Models.PessoaFisica", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.HasBaseType("VetCrm.Models.Pessoa");
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("PessoasFisicas", (string)null);
+                });
+
+            modelBuilder.Entity("VetCrm.Models.PessoaJuridica", b =>
+                {
+                    b.HasBaseType("VetCrm.Models.Pessoa");
+
+                    b.Property<string>("CNPJ")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("PessoasJuridicas", (string)null);
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
+                {
+                    b.HasBaseType("VetCrm.Models.PessoaFisica");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.ToTable("Proprietarios", (string)null);
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
+                {
+                    b.HasBaseType("VetCrm.Models.PessoaFisica");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Perfil")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("Perfil");
+
+                    b.ToTable("Usuarios", (string)null);
+                });
+
+            modelBuilder.Entity("Veterinario", b =>
+                {
+                    b.HasBaseType("VetCrm.Models.PessoaFisica");
 
                     b.Property<string>("CRMV")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EnderecoId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("EspecialidadeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoPessoa")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
-
                     b.HasIndex("EspecialidadeId");
 
-                    b.ToTable("Veterinarios");
+                    b.ToTable("Veterinarios", (string)null);
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
+                {
+                    b.HasBaseType("VetCrm.Models.PessoaJuridica");
+
+                    b.ToTable("Estabelecimentos", (string)null);
                 });
 
             modelBuilder.Entity("VetCrm.Models.Consulta", b =>
@@ -619,30 +621,9 @@ namespace VetCrm.Migrations
 
             modelBuilder.Entity("VetCrm.Models.Contato", b =>
                 {
-                    b.HasOne("VetCrm.Models.Estabelecimento", null)
+                    b.HasOne("VetCrm.Models.Pessoa", null)
                         .WithMany("Contatos")
-                        .HasForeignKey("EstabelecimentoId");
-
-                    b.HasOne("VetCrm.Models.Proprietario", null)
-                        .WithMany("Contatos")
-                        .HasForeignKey("ProprietarioId");
-
-                    b.HasOne("VetCrm.Models.Usuario", null)
-                        .WithMany("Contatos")
-                        .HasForeignKey("UsuarioId");
-
-                    b.HasOne("Veterinario", null)
-                        .WithMany("Contatos")
-                        .HasForeignKey("VeterinarioId");
-                });
-
-            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
-                {
-                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId");
-
-                    b.Navigation("Endereco");
+                        .HasForeignKey("PessoaId");
                 });
 
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>
@@ -691,6 +672,15 @@ namespace VetCrm.Migrations
                     b.Navigation("Vacina");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.Pessoa", b =>
+                {
+                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
+                        .WithMany()
+                        .HasForeignKey("EnderecoId");
+
+                    b.Navigation("Endereco");
+                });
+
             modelBuilder.Entity("VetCrm.Models.Produto", b =>
                 {
                     b.HasOne("VetCrm.Models.Categoria", "Categoria")
@@ -725,15 +715,6 @@ namespace VetCrm.Migrations
                     b.Navigation("Paciente");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
-                {
-                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId");
-
-                    b.Navigation("Endereco");
-                });
-
             modelBuilder.Entity("VetCrm.Models.Raca", b =>
                 {
                     b.HasOne("VetCrm.Models.Especie", "Especie")
@@ -743,15 +724,6 @@ namespace VetCrm.Migrations
                         .IsRequired();
 
                     b.Navigation("Especie");
-                });
-
-            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
-                {
-                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId");
-
-                    b.Navigation("Endereco");
                 });
 
             modelBuilder.Entity("VetCrm.Models.UsuarioEstabelecimento", b =>
@@ -773,20 +745,73 @@ namespace VetCrm.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.PessoaFisica", b =>
+                {
+                    b.HasOne("VetCrm.Models.Pessoa", null)
+                        .WithOne()
+                        .HasForeignKey("VetCrm.Models.PessoaFisica", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VetCrm.Models.PessoaJuridica", b =>
+                {
+                    b.HasOne("VetCrm.Models.Pessoa", null)
+                        .WithOne()
+                        .HasForeignKey("VetCrm.Models.PessoaJuridica", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
+                {
+                    b.HasOne("VetCrm.Models.PessoaFisica", null)
+                        .WithOne()
+                        .HasForeignKey("VetCrm.Models.Proprietario", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
+                {
+                    b.HasOne("VetCrm.Models.PessoaFisica", null)
+                        .WithOne()
+                        .HasForeignKey("VetCrm.Models.Usuario", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VetCrm.Models.Perfil", "PerfilNavegacao")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("Perfil")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("PerfilNavegacao");
+                });
+
             modelBuilder.Entity("Veterinario", b =>
                 {
-                    b.HasOne("VetCrm.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId");
-
                     b.HasOne("VetCrm.Models.Especialidade", "Especialidade")
                         .WithMany("Veterinarios")
                         .HasForeignKey("EspecialidadeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Endereco");
+                    b.HasOne("VetCrm.Models.PessoaFisica", null)
+                        .WithOne()
+                        .HasForeignKey("Veterinario", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Especialidade");
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
+                {
+                    b.HasOne("VetCrm.Models.PessoaJuridica", null)
+                        .WithOne()
+                        .HasForeignKey("VetCrm.Models.Estabelecimento", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("VetCrm.Models.Consulta", b =>
@@ -804,13 +829,6 @@ namespace VetCrm.Migrations
                     b.Navigation("Racas");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
-                {
-                    b.Navigation("Contatos");
-
-                    b.Navigation("UsuarioEstabelecimentos");
-                });
-
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>
                 {
                     b.Navigation("Consultas");
@@ -820,11 +838,14 @@ namespace VetCrm.Migrations
                     b.Navigation("Prontuarios");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
+            modelBuilder.Entity("VetCrm.Models.Perfil", b =>
+                {
+                    b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Pessoa", b =>
                 {
                     b.Navigation("Contatos");
-
-                    b.Navigation("Pacientes");
                 });
 
             modelBuilder.Entity("VetCrm.Models.TipoConsulta", b =>
@@ -832,23 +853,29 @@ namespace VetCrm.Migrations
                     b.Navigation("Consultas");
                 });
 
-            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
-                {
-                    b.Navigation("Contatos");
-
-                    b.Navigation("UsuarioEstabelecimentos");
-                });
-
             modelBuilder.Entity("VetCrm.Models.Vacina", b =>
                 {
                     b.Navigation("PacienteVacinas");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.Proprietario", b =>
+                {
+                    b.Navigation("Pacientes");
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Usuario", b =>
+                {
+                    b.Navigation("UsuarioEstabelecimentos");
+                });
+
             modelBuilder.Entity("Veterinario", b =>
                 {
                     b.Navigation("Consultas");
+                });
 
-                    b.Navigation("Contatos");
+            modelBuilder.Entity("VetCrm.Models.Estabelecimento", b =>
+                {
+                    b.Navigation("UsuarioEstabelecimentos");
                 });
 #pragma warning restore 612, 618
         }

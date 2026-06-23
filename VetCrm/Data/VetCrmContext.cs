@@ -20,9 +20,23 @@ namespace VetCrm.Data
         public DbSet<PacienteVacina> PacienteVacinas { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Perfil> Perfis { get; set; }
+        public DbSet<Exame> Exames { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configuração de herança TPT (Table Per Type)
+            // Cada classe da hierarquia Pessoa mora na sua própria tabela,
+            // todas ligadas pelo mesmo Id.
+            modelBuilder.Entity<Pessoa>().ToTable("Pessoas");
+            modelBuilder.Entity<PessoaFisica>().ToTable("PessoasFisicas");
+            modelBuilder.Entity<PessoaJuridica>().ToTable("PessoasJuridicas");
+
+            modelBuilder.Entity<Proprietario>().ToTable("Proprietarios");
+            modelBuilder.Entity<Veterinario>().ToTable("Veterinarios");
+            modelBuilder.Entity<Usuario>().ToTable("Usuarios");
+            modelBuilder.Entity<Estabelecimento>().ToTable("Estabelecimentos");
+
             modelBuilder.Entity<Proprietario>()
                 .HasOne(p => p.Endereco)
                 .WithMany()
@@ -92,6 +106,24 @@ namespace VetCrm.Data
                 .WithMany()
                 .HasForeignKey(u => u.EnderecoId)
                 .IsRequired(false);
+
+            // Usuario → Perfil
+            // A coluna do enum (Perfil) É a chave estrangeira pra tabela Perfis.
+            // Não nasce coluna nova: o número do enum (1 a 4) aponta pro Id do perfil.
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.PerfilNavegacao)
+                .WithMany(p => p.Usuarios)
+                .HasForeignKey(u => u.Perfil)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Semeia os perfis com os MESMOS Ids do enum (1 a 4),
+            // pra que os usuários já existentes continuem apontando pro perfil certo.
+            modelBuilder.Entity<Perfil>().HasData(
+                new Perfil { Id = PerfilUsuario.Recepcao, Nome = "Recepção" },
+                new Perfil { Id = PerfilUsuario.Administrativo, Nome = "Administrativo" },
+                new Perfil { Id = PerfilUsuario.Financeiro, Nome = "Financeiro" },
+                new Perfil { Id = PerfilUsuario.Gerente, Nome = "Gerente" }
+            );
 
             // Estabelecimento → Endereco
             modelBuilder.Entity<Estabelecimento>()
