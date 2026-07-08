@@ -1,0 +1,69 @@
+@model IEnumerable<VetCrm.Models.Consulta>
+
+@{
+    ViewData["Title"] = "Agenda";
+    var dataSelecionada = (DateTime)ViewData["Data"];
+    var veterinarioSelecionado = ViewData["VeterinarioId_Selecionado"] as int?;
+}
+
+<h2>📅 Agenda do Veterinário</h2>
+
+<form asp-action="Index" method="get" class="row g-2 align-items-end my-3">
+    <div class="col-md-4">
+        <label class="form-label">Veterinário</label>
+        <select name="veterinarioId" class="form-select" asp-items="@(ViewData["VeterinarioId"] as SelectList)">
+            <option value="">Selecione...</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Data</label>
+        <input type="date" name="data" value="@dataSelecionada.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Ver agenda</button>
+    </div>
+</form>
+
+@if (veterinarioSelecionado == null)
+{
+    <div class="alert alert-info">Escolha um veterinário para ver a agenda.</div>
+}
+else if (!Model.Any())
+{
+    <div class="alert alert-secondary">Nenhuma consulta para esse veterinário no dia @dataSelecionada.ToString("dd/MM/yyyy").</div>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Horário</th>
+                <th>Paciente</th>
+                <th>Tipo</th>
+                <th>Situação</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.DataConsulta.ToString("HH:mm")</strong></td>
+                    <td>@item.Paciente?.Nome</td>
+                    <td>@item.TipoConsulta?.Nome</td>
+                    <td>@item.Situacao</td>
+                    <td>
+                        @if (item.Situacao == VetCrm.Models.SituacaoConsulta.Realizada)
+                        {
+                            <a asp-controller="Prontuario" asp-action="Atender" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Prontuario" asp-action="Atender" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Atender</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

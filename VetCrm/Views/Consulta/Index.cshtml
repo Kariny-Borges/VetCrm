@@ -26,18 +26,41 @@
             <th>Data</th>
             <th>Tipo</th>
             <th>Paciente</th>
-            <th>Veterinario</th>
-            <th>Acoes</th>
+            <th>Veterinário</th>
+            <th>Situação</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.DataConsulta.ToString("dd/MM/yyyy")</td>
+                <td>@item.DataConsulta.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>@item.TipoConsulta?.Nome</td>
                 <td>@item.Paciente?.Nome</td>
                 <td>@item.Veterinario?.Nome</td>
+                <td>
+                    @{
+                        var cor = item.Situacao switch
+                        {
+                            SituacaoConsulta.Agendada => "secondary",
+                            SituacaoConsulta.Aguardando => "warning",
+                            SituacaoConsulta.EmAtendimento => "info",
+                            SituacaoConsulta.Realizada => "success",
+                            SituacaoConsulta.Faltou => "danger",
+                            SituacaoConsulta.Cancelada => "dark",
+                            _ => "secondary"
+                        };
+                    }
+                    <form asp-action="MudarSituacao" asp-route-id="@item.Id" method="post">
+                        <select name="situacao" class="form-select form-select-sm text-bg-@cor" onchange="this.form.submit()">
+                            @foreach (var s in Enum.GetValues<SituacaoConsulta>())
+                            {
+                                <option value="@s" selected="@(s == item.Situacao)" style="background-color:#fff; color:#000;">@s</option>
+                            }
+                        </select>
+                    </form>
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>

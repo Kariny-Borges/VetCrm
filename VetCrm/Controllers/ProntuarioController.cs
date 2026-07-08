@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.Models.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -45,6 +46,97 @@ namespace VetCrm.Controllers
             }
 
             return View(prontuario);
+        }
+
+        // GET: Prontuario/Atender/5   (o 5 é o Id da CONSULTA, não do prontuário)
+        public async Task<IActionResult> Atender(int id)
+        {
+            // 1) Busca a consulta escolhida, trazendo o paciente e o prontuário (se já houver).
+            var consulta = await _context.Consultas
+                .Include(c => c.Paciente)
+                .Include(c => c.Prontuario)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (consulta == null)
+            {
+                return NotFound();
+            }
+
+            // 2) Se essa consulta ainda não tem prontuário, cria um em branco.
+            //    (só na memória por enquanto — só salva no banco quando o vet clicar em Salvar)
+            var prontuario = consulta.Prontuario ?? new Prontuario
+            {
+                ConsultaId = consulta.Id,
+                PacienteId = consulta.PacienteId,
+                DataRegistro = DateTime.Now
+            };
+
+            // 3) Histórico do paciente: consultas anteriores (menos a atual) e vacinas.
+            var historicoConsultas = await _context.Consultas
+                .Include(c => c.TipoConsulta)
+                .Where(c => c.PacienteId == consulta.PacienteId && c.Id != consulta.Id)
+                .OrderByDescending(c => c.DataConsulta)
+                .ToListAsync();
+
+            var historicoVacinas = await _context.PacienteVacinas
+                .Include(pv => pv.Vacina)
+                .Where(pv => pv.PacienteId == consulta.PacienteId)
+                .OrderByDescending(pv => pv.DataAplicacao)
+                .ToListAsync();
+
+            // 4) Retorna p/ tela
+            var viewModel = new AtendimentoViewModel
+            {
+                Consulta = consulta,
+                Prontuario = prontuario,
+                HistoricoConsultas = historicoConsultas,
+                HistoricoVacinas = historicoVacinas
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: Prontuario/Atender
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Atender(AtendimentoViewModel model)
+        {
+            var prontuario = model.Prontuario;
+
+            // Se o Id é 0, é um prontuário novo; senão, já existe e precisa atualizar.
+            if (prontuario.Id == 0)
+            {
+                _context.Prontuarios.Add(prontuario);
+            }
+            else
+            {
+                _context.Prontuarios.Update(prontuario);
+            }
+
+            // Se marcou "finalizar", muda a situação da consulta para Realizada.
+            Consulta? consulta = null;
+            if (model.FinalizarConsulta)
+            {
+                consulta = await _context.Consultas.FindAsync(prontuario.ConsultaId);
+                if (consulta != null)
+                {
+                    consulta.Situacao = SituacaoConsulta.Realizada;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Se finalizou, volta pra Agenda (mesmo vet e dia). Senão, fica na tela pra seguir editando.
+            if (model.FinalizarConsulta && consulta != null)
+            {
+                return RedirectToAction("Index", "Agenda", new
+                {
+                    veterinarioId = consulta.VeterinarioId,
+                    data = consulta.DataConsulta.ToString("yyyy-MM-dd")
+                });
+            }
+
+            return RedirectToAction(nameof(Atender), new { id = prontuario.ConsultaId });
         }
 
         // GET: Prontuario/Create

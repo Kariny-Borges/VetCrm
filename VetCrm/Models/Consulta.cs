@@ -5,6 +5,7 @@ namespace VetCrm.Models
     public class Consulta : EntidadeBase
     {
         public DateTime DataConsulta { get; set; }
+        public SituacaoConsulta Situacao { get; set; } = SituacaoConsulta.Agendada;
         public string Observacoes { get; set; }
 
         public int TipoConsultaId { get; set; }
@@ -18,7 +19,6 @@ namespace VetCrm.Models
 
         public Prontuario? Prontuario { get; set; }
 
-        // Etiqueta legível da consulta (ex: "10/06/2026 - Rex"). Não vira coluna no banco.
         [NotMapped]
         public string Resumo => $"{DataConsulta:dd/MM/yyyy} - {Paciente?.Nome}";
     }

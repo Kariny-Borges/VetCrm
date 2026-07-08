@@ -1,0 +1,114 @@
+@model VetCrm.Models.ViewModels.AtendimentoViewModel
+
+@{
+    ViewData["Title"] = "Atendimento";
+}
+
+<h2>🩺 Atendimento — @Model.Consulta.Paciente?.Nome</h2>
+<p class="text-muted">
+    Consulta de @Model.Consulta.DataConsulta.ToString("dd/MM/yyyy HH:mm")
+    — Situação atual: <strong>@Model.Consulta.Situacao</strong>
+</p>
+
+<hr />
+
+<!-- ===== Formulário da Evolução ===== -->
+<form asp-action="Atender" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Campos escondidos: o vet não digita, mas precisamos mandar de volta -->
+    <input type="hidden" asp-for="Prontuario.Id" />
+    <input type="hidden" asp-for="Prontuario.ConsultaId" />
+    <input type="hidden" asp-for="Prontuario.PacienteId" />
+    <input type="hidden" asp-for="Prontuario.DataRegistro" />
+
+    <div class="mb-3">
+        <label asp-for="Prontuario.Descricao" class="form-label">Evolução</label>
+        <textarea asp-for="Prontuario.Descricao" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Prontuario.Diagnostico" class="form-label">Diagnóstico</label>
+        <textarea asp-for="Prontuario.Diagnostico" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Prontuario.Tratamento" class="form-label">Tratamento</label>
+        <textarea asp-for="Prontuario.Tratamento" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Prontuario.Exames" class="form-label">Exames</label>
+        <textarea asp-for="Prontuario.Exames" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="FinalizarConsulta" class="form-check-input" />
+        <label asp-for="FinalizarConsulta" class="form-check-label">
+            Finalizar consulta (marca como Realizada)
+        </label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-controller="Agenda" asp-action="Index" class="btn btn-secondary">Voltar</a>
+</form>
+
+<hr class="my-4" />
+
+<!-- ===== Histórico de Consultas ===== -->
+<h4>📋 Histórico de consultas</h4>
+@if (!Model.HistoricoConsultas.Any())
+{
+    <p class="text-muted">Nenhuma consulta anterior.</p>
+}
+else
+{
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Situação</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.HistoricoConsultas)
+            {
+                <tr>
+                    <td>@c.DataConsulta.ToString("dd/MM/yyyy")</td>
+                    <td>@c.TipoConsulta?.Nome</td>
+                    <td>@c.Situacao</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- ===== Histórico de Vacinas ===== -->
+<h4 class="mt-4">💉 Histórico de vacinas</h4>
+@if (!Model.HistoricoVacinas.Any())
+{
+    <p class="text-muted">Nenhuma vacina registrada.</p>
+}
+else
+{
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Vacina</th>
+                <th>Aplicação</th>
+                <th>Próxima dose</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model.HistoricoVacinas)
+            {
+                <tr>
+                    <td>@v.Vacina?.Nome</td>
+                    <td>@v.DataAplicacao.ToString("dd/MM/yyyy")</td>
+                    <td>@v.DataProximaDose.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

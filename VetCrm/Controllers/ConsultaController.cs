@@ -139,6 +139,22 @@ namespace VetCrm.Controllers
             return View(consulta);
         }
 
+        // POST: Consulta/MudarSituacao
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MudarSituacao(int id, SituacaoConsulta situacao)
+        {
+            var consulta = await _context.Consultas.FindAsync(id);
+            if (consulta == null)
+            {
+                return NotFound();
+            }
+
+            consulta.Situacao = situacao;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: Consulta/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

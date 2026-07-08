@@ -2,9 +2,10 @@
 {
     public class Prontuario : EntidadeBase
     {
-        public string Descricao { get; set; }
+        public string Descricao { get; set; }      
         public string Diagnostico { get; set; }
         public string Tratamento { get; set; }
+        public string Exames { get; set; } = string.Empty;  
         public DateTime DataRegistro { get; set; }
 
         public int PacienteId { get; set; }

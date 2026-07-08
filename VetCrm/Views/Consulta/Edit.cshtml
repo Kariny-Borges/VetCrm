@@ -16,8 +16,8 @@
             <input type="hidden" asp-for="Id" />
 
             <div class="form-group mb-3">
-                <label asp-for="DataConsulta">Data da Consulta</label>
-                <input asp-for="DataConsulta" class="form-control" type="date" />
+                <label asp-for="DataConsulta">Data e Hora da Consulta</label>
+                <input asp-for="DataConsulta" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <span asp-validation-for="DataConsulta" class="text-danger"></span>
             </div>
 
