@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -35,37 +36,62 @@ namespace VetCrm.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Produto produto)
+        public async Task<IActionResult> Create(ProdutoViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var produto = new Produto
+                {
+                    Nome = model.Nome,
+                    CategoriaId = model.CategoriaId,
+                    Quantidade = model.Quantidade,
+                    Preco = model.Preco
+                };
+
                 _context.Add(produto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
-            return View(produto);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", model.CategoriaId);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
             if (produto == null) return NotFound();
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
-            return View(produto);
+
+            var model = new ProdutoViewModel
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                CategoriaId = produto.CategoriaId,
+                Quantidade = produto.Quantidade,
+                Preco = produto.Preco
+            };
+
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", model.CategoriaId);
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Produto produto)
+        public async Task<IActionResult> Edit(int id, ProdutoViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Update(produto);
+                var produto = await _context.Produtos.FindAsync(model.Id);
+                if (produto == null) return NotFound();
+
+                produto.Nome = model.Nome;
+                produto.CategoriaId = model.CategoriaId;
+                produto.Quantidade = model.Quantidade;
+                produto.Preco = model.Preco;
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produto.CategoriaId);
-            return View(produto);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", model.CategoriaId);
+            return View(model);
         }
 
         public async Task<IActionResult> Details(int id)

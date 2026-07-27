@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -58,23 +59,38 @@ namespace VetCrm.Controllers
         // POST: Usuario/Create - salva no banco
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,CPF,Telefone,Email,Login,Senha,Perfil")] Usuario usuario, Endereco endereco)
+        public async Task<IActionResult> Create(UsuarioViewModel model, EnderecoViewModel endereco)
         {
-            ModelState.Remove("Endereco");
-            ModelState.Remove("UsuarioEstabelecimentos");
-            // Endereço é opcional: limpa qualquer erro de validação de "endereco.*"
-            foreach (var chave in ModelState.Keys.Where(k => k.StartsWith("endereco.")).ToList())
-                ModelState.Remove(chave);
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var usuario = new Usuario
+                    {
+                        Nome = model.Nome,
+                        CPF = model.CPF,
+                        Telefone = model.Telefone,
+                        Email = model.Email,
+                        Login = model.Login,
+                        Senha = model.Senha,
+                        Perfil = model.Perfil
+                    };
+
                     if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                     {
-                        _context.Enderecos.Add(endereco);
+                        var novoEndereco = new Endereco
+                        {
+                            CEP = endereco.CEP,
+                            Logradouro = endereco.Logradouro,
+                            Numero = endereco.Numero,
+                            Complemento = endereco.Complemento,
+                            Bairro = endereco.Bairro,
+                            Cidade = endereco.Cidade,
+                            Estado = endereco.Estado
+                        };
+                        _context.Enderecos.Add(novoEndereco);
                         await _context.SaveChangesAsync();
-                        usuario.EnderecoId = endereco.Id;
+                        usuario.EnderecoId = novoEndereco.Id;
                     }
 
                     _context.Usuarios.Add(usuario);
@@ -93,7 +109,7 @@ namespace VetCrm.Controllers
                 .Where(x => x.Value!.Errors.Count > 0)
                 .Select(x => $"{x.Key}: {x.Value!.Errors[0].ErrorMessage}"));
 
-            return View(usuario);
+            return View(model);
         }
 
         // GET: Usuario/Edit/
@@ -108,27 +124,56 @@ namespace VetCrm.Controllers
                 .FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null) return NotFound();
 
+            var model = new UsuarioViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                CPF = usuario.CPF,
+                Telefone = usuario.Telefone,
+                Email = usuario.Email,
+                Login = usuario.Login,
+                Senha = usuario.Senha,
+                Perfil = usuario.Perfil,
+                EnderecoId = usuario.EnderecoId,
+                Endereco = usuario.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = usuario.Endereco.Id,
+                    CEP = usuario.Endereco.CEP,
+                    Logradouro = usuario.Endereco.Logradouro,
+                    Numero = usuario.Endereco.Numero,
+                    Complemento = usuario.Endereco.Complemento,
+                    Bairro = usuario.Endereco.Bairro,
+                    Cidade = usuario.Endereco.Cidade,
+                    Estado = usuario.Endereco.Estado
+                }
+            };
+
             ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
-            return View(usuario);
+            return View(model);
         }
 
         // POST: Usuario/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CPF,Telefone,Email,Login,Senha,Perfil,EnderecoId")] Usuario usuario, Endereco endereco)
+        public async Task<IActionResult> Edit(int id, UsuarioViewModel model, EnderecoViewModel endereco)
         {
-            if (id != usuario.Id) return NotFound();
-
-            ModelState.Remove("Endereco");
-            ModelState.Remove("UsuarioEstabelecimentos");
-            // Endereço é opcional: limpa qualquer erro de validação de "endereco.*"
-            foreach (var chave in ModelState.Keys.Where(k => k.StartsWith("endereco.")).ToList())
-                ModelState.Remove(chave);
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var usuario = await _context.Usuarios.FindAsync(id);
+                    if (usuario == null) return NotFound();
+
+                    usuario.Nome = model.Nome;
+                    usuario.CPF = model.CPF;
+                    usuario.Telefone = model.Telefone;
+                    usuario.Email = model.Email;
+                    usuario.Login = model.Login;
+                    usuario.Senha = model.Senha;
+                    usuario.Perfil = model.Perfil;
+
                     if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                     {
                         if (usuario.EnderecoId.HasValue && usuario.EnderecoId.Value > 0)
@@ -147,25 +192,34 @@ namespace VetCrm.Controllers
                         }
                         else
                         {
-                            _context.Enderecos.Add(endereco);
+                            var novoEndereco = new Endereco
+                            {
+                                CEP = endereco.CEP,
+                                Logradouro = endereco.Logradouro,
+                                Numero = endereco.Numero,
+                                Complemento = endereco.Complemento,
+                                Bairro = endereco.Bairro,
+                                Cidade = endereco.Cidade,
+                                Estado = endereco.Estado
+                            };
+                            _context.Enderecos.Add(novoEndereco);
                             await _context.SaveChangesAsync();
-                            usuario.EnderecoId = endereco.Id;
+                            usuario.EnderecoId = novoEndereco.Id;
                         }
                     }
 
-                    _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuarioExists(usuario.Id)) return NotFound();
+                    if (!UsuarioExists(model.Id)) return NotFound();
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
-            return View(usuario);
+            return View(model);
         }
 
         // GET: Usuario/Delete/5

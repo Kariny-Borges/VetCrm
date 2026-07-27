@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -49,27 +50,33 @@ namespace VetCrm.Controllers
         // GET: PacienteVacina/Create
         public IActionResult Create()
         {
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id");
-            ViewData["VacinaId"] = new SelectList(_context.Vacinas, "Id", "Id");
+            CarregarDropdowns();
             return View();
         }
 
         // POST: PacienteVacina/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PacienteId,VacinaId,DataAplicacao,DataProximaDose")] PacienteVacina pacienteVacina)
+        public async Task<IActionResult> Create(PacienteVacinaViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var pacienteVacina = new PacienteVacina
+                {
+                    PacienteId = model.PacienteId,
+                    VacinaId = model.VacinaId,
+                    DataAplicacao = model.DataAplicacao,
+                    DataProximaDose = model.DataProximaDose
+                    // ProntuarioId fica null: vacinação lançada fora de um atendimento.
+                };
+
                 _context.Add(pacienteVacina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", pacienteVacina.PacienteId);
-            ViewData["VacinaId"] = new SelectList(_context.Vacinas, "Id", "Id", pacienteVacina.VacinaId);
-            return View(pacienteVacina);
+
+            CarregarDropdowns(model.PacienteId, model.VacinaId);
+            return View(model);
         }
 
         // GET: PacienteVacina/Edit/5
@@ -85,19 +92,26 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", pacienteVacina.PacienteId);
-            ViewData["VacinaId"] = new SelectList(_context.Vacinas, "Id", "Id", pacienteVacina.VacinaId);
-            return View(pacienteVacina);
+
+            var model = new PacienteVacinaViewModel
+            {
+                Id = pacienteVacina.Id,
+                PacienteId = pacienteVacina.PacienteId,
+                VacinaId = pacienteVacina.VacinaId,
+                DataAplicacao = pacienteVacina.DataAplicacao,
+                DataProximaDose = pacienteVacina.DataProximaDose
+            };
+
+            CarregarDropdowns(model.PacienteId, model.VacinaId);
+            return View(model);
         }
 
         // POST: PacienteVacina/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PacienteId,VacinaId,DataAplicacao,DataProximaDose")] PacienteVacina pacienteVacina)
+        public async Task<IActionResult> Edit(int id, PacienteVacinaViewModel model)
         {
-            if (id != pacienteVacina.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -106,12 +120,23 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(pacienteVacina);
+                    var pacienteVacina = await _context.PacienteVacinas.FindAsync(id);
+                    if (pacienteVacina == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Só o que a tela edita. ProntuarioId continua com o valor do banco.
+                    pacienteVacina.PacienteId = model.PacienteId;
+                    pacienteVacina.VacinaId = model.VacinaId;
+                    pacienteVacina.DataAplicacao = model.DataAplicacao;
+                    pacienteVacina.DataProximaDose = model.DataProximaDose;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PacienteVacinaExists(pacienteVacina.Id))
+                    if (!PacienteVacinaExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -122,9 +147,9 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Id", pacienteVacina.PacienteId);
-            ViewData["VacinaId"] = new SelectList(_context.Vacinas, "Id", "Id", pacienteVacina.VacinaId);
-            return View(pacienteVacina);
+
+            CarregarDropdowns(model.PacienteId, model.VacinaId);
+            return View(model);
         }
 
         // GET: PacienteVacina/Delete/5
@@ -169,6 +194,15 @@ namespace VetCrm.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // Monta os dois dropdowns da tela, mostrando o NOME (antes mostrava o Id).
+        private void CarregarDropdowns(int? pacienteId = null, int? vacinaId = null)
+        {
+            ViewData["PacienteId"] = new SelectList(
+                _context.Pacientes.OrderBy(p => p.Nome), "Id", "Nome", pacienteId);
+            ViewData["VacinaId"] = new SelectList(
+                _context.Vacinas.OrderBy(v => v.Nome), "Id", "Nome", vacinaId);
         }
 
         private bool PacienteVacinaExists(int id)

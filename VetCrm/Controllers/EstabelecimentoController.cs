@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -54,26 +55,38 @@ namespace VetCrm.Controllers
         // POST: Estabelecimento/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,CNPJ")] Estabelecimento estabelecimento, Endereco endereco)
+        public async Task<IActionResult> Create(EstabelecimentoViewModel model, EnderecoViewModel endereco)
         {
-            ModelState.Remove("Endereco");
-            ModelState.Remove("UsuarioEstabelecimentos");
-            ModelState.Remove("endereco.Id");
-
             if (ModelState.IsValid)
             {
+                var estabelecimento = new Estabelecimento
+                {
+                    Nome = model.Nome,
+                    CNPJ = model.CNPJ
+                };
+
                 if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                 {
-                    _context.Enderecos.Add(endereco);
+                    var novoEndereco = new Endereco
+                    {
+                        CEP = endereco.CEP,
+                        Logradouro = endereco.Logradouro,
+                        Numero = endereco.Numero,
+                        Complemento = endereco.Complemento,
+                        Bairro = endereco.Bairro,
+                        Cidade = endereco.Cidade,
+                        Estado = endereco.Estado
+                    };
+                    _context.Enderecos.Add(novoEndereco);
                     await _context.SaveChangesAsync();
-                    estabelecimento.EnderecoId = endereco.Id;
+                    estabelecimento.EnderecoId = novoEndereco.Id;
                 }
 
                 _context.Add(estabelecimento);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(estabelecimento);
+            return View(model);
         }
 
         // GET: Estabelecimento/Edit/5
@@ -84,24 +97,45 @@ namespace VetCrm.Controllers
             var estabelecimento = await _context.Estabelecimentos.Include(e => e.Endereco).FirstOrDefaultAsync(e => e.Id == id);
             if (estabelecimento == null) return NotFound();
 
-            return View(estabelecimento);
+            var model = new EstabelecimentoViewModel
+            {
+                Id = estabelecimento.Id,
+                Nome = estabelecimento.Nome,
+                CNPJ = estabelecimento.CNPJ,
+                EnderecoId = estabelecimento.EnderecoId,
+                Endereco = estabelecimento.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = estabelecimento.Endereco.Id,
+                    CEP = estabelecimento.Endereco.CEP,
+                    Logradouro = estabelecimento.Endereco.Logradouro,
+                    Numero = estabelecimento.Endereco.Numero,
+                    Complemento = estabelecimento.Endereco.Complemento,
+                    Bairro = estabelecimento.Endereco.Bairro,
+                    Cidade = estabelecimento.Endereco.Cidade,
+                    Estado = estabelecimento.Endereco.Estado
+                }
+            };
+
+            return View(model);
         }
 
         // POST: Estabelecimento/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CNPJ,EnderecoId")] Estabelecimento estabelecimento, Endereco endereco)
+        public async Task<IActionResult> Edit(int id, EstabelecimentoViewModel model, EnderecoViewModel endereco)
         {
-            if (id != estabelecimento.Id) return NotFound();
-
-            ModelState.Remove("Endereco");
-            ModelState.Remove("UsuarioEstabelecimentos");
-            ModelState.Remove("endereco.Id");
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var estabelecimento = await _context.Estabelecimentos.FindAsync(id);
+                    if (estabelecimento == null) return NotFound();
+
+                    estabelecimento.Nome = model.Nome;
+                    estabelecimento.CNPJ = model.CNPJ;
+
                     if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                     {
                         if (estabelecimento.EnderecoId.HasValue && estabelecimento.EnderecoId.Value > 0)
@@ -120,23 +154,32 @@ namespace VetCrm.Controllers
                         }
                         else
                         {
-                            _context.Enderecos.Add(endereco);
+                            var novoEndereco = new Endereco
+                            {
+                                CEP = endereco.CEP,
+                                Logradouro = endereco.Logradouro,
+                                Numero = endereco.Numero,
+                                Complemento = endereco.Complemento,
+                                Bairro = endereco.Bairro,
+                                Cidade = endereco.Cidade,
+                                Estado = endereco.Estado
+                            };
+                            _context.Enderecos.Add(novoEndereco);
                             await _context.SaveChangesAsync();
-                            estabelecimento.EnderecoId = endereco.Id;
+                            estabelecimento.EnderecoId = novoEndereco.Id;
                         }
                     }
 
-                    _context.Update(estabelecimento);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EstabelecimentoExists(estabelecimento.Id)) return NotFound();
+                    if (!EstabelecimentoExists(model.Id)) return NotFound();
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(estabelecimento);
+            return View(model);
         }
 
         // GET: Estabelecimento/Delete/5

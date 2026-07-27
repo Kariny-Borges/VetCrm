@@ -1,0 +1,31 @@
+@model VetCrm.ViewModels.PacienteExameViewModel
+
+@{
+    ViewData["Title"] = "Editar exame";
+}
+
+<h2>🔬 Editar exame</h2>
+
+<hr />
+
+<form asp-action="EditarExame" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Campos que o vet não digita, mas o formulário precisa devolver -->
+    <input type="hidden" name="consultaId" value="@ViewBag.ConsultaId" />
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="ExameId" class="form-label">Exame</label>
+        <select asp-for="ExameId" asp-items="ViewBag.ExamesDisponiveis" class="form-select"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Resultado" class="form-label">Resultado</label>
+        <textarea asp-for="Resultado" class="form-control" rows="3"></textarea>
+        <small class="text-muted">Deixe em branco enquanto o exame estiver pendente.</small>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-action="Atender" asp-route-id="@ViewBag.ConsultaId" class="btn btn-secondary">Voltar</a>
+</form>

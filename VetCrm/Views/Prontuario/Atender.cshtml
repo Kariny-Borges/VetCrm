@@ -1,4 +1,4 @@
-@model VetCrm.Models.ViewModels.AtendimentoViewModel
+@model VetCrm.ViewModels.AtendimentoViewModel
 
 @{
     ViewData["Title"] = "Atendimento";
@@ -12,46 +12,300 @@
 
 <hr />
 
-<!-- ===== Formulário da Evolução ===== -->
-<form asp-action="Atender" method="post">
-    @Html.AntiForgeryToken()
-
-    <!-- Campos escondidos: o vet não digita, mas precisamos mandar de volta -->
-    <input type="hidden" asp-for="Prontuario.Id" />
-    <input type="hidden" asp-for="Prontuario.ConsultaId" />
-    <input type="hidden" asp-for="Prontuario.PacienteId" />
-    <input type="hidden" asp-for="Prontuario.DataRegistro" />
-
-    <div class="mb-3">
-        <label asp-for="Prontuario.Descricao" class="form-label">Evolução</label>
-        <textarea asp-for="Prontuario.Descricao" class="form-control" rows="3"></textarea>
+@if (Model.SomenteLeitura)
+{
+    <!-- ===== Modo somente leitura (consulta já Realizada) ===== -->
+    <div class="alert alert-secondary">
+        Esta consulta já foi finalizada.
     </div>
 
     <div class="mb-3">
-        <label asp-for="Prontuario.Diagnostico" class="form-label">Diagnóstico</label>
-        <textarea asp-for="Prontuario.Diagnostico" class="form-control" rows="2"></textarea>
+        <label class="form-label">Evolução</label>
+        <p class="form-control-plaintext border rounded p-2 bg-light">@Model.Prontuario.Descricao</p>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Prontuario.Tratamento" class="form-label">Tratamento</label>
-        <textarea asp-for="Prontuario.Tratamento" class="form-control" rows="2"></textarea>
+        <label class="form-label">Diagnóstico</label>
+        <p class="form-control-plaintext border rounded p-2 bg-light">@Model.Prontuario.Diagnostico</p>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Prontuario.Exames" class="form-label">Exames</label>
-        <textarea asp-for="Prontuario.Exames" class="form-control" rows="2"></textarea>
+        <label class="form-label">Tratamentos</label>
+        @if (Model.HistoricoTratamentos.Any())
+        {
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.HistoricoTratamentos)
+                    {
+                        <tr>
+                            <td>@t.Descricao</td>
+                            <td>@t.DataInicio.ToString("dd/MM/yyyy")</td>
+                            <td>@(t.DataFim.HasValue ? t.DataFim.Value.ToString("dd/MM/yyyy") : "Em andamento")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">Nenhum tratamento registrado.</p>
+        }
     </div>
 
-    <div class="form-check mb-3">
-        <input asp-for="FinalizarConsulta" class="form-check-input" />
-        <label asp-for="FinalizarConsulta" class="form-check-label">
-            Finalizar consulta (marca como Realizada)
-        </label>
+    <div class="mb-3">
+        <label class="form-label">Exames</label>
+        @if (Model.HistoricoExames.Any())
+        {
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Exame</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.HistoricoExames)
+                    {
+                        <tr>
+                            <td>@e.Exame?.Nome</td>
+                            <td>@(string.IsNullOrWhiteSpace(e.Resultado) ? "Pendente" : e.Resultado)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">Nenhum exame solicitado.</p>
+        }
     </div>
 
-    <button type="submit" class="btn btn-success">Salvar</button>
+    <div class="mb-3">
+        <label class="form-label">Vacinas</label>
+        @if (Model.HistoricoVacinas.Any())
+        {
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Vacina</th>
+                        <th>Aplicação</th>
+                        <th>Próxima dose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var v in Model.HistoricoVacinas)
+                    {
+                        <tr>
+                            <td>@v.Vacina?.Nome</td>
+                            <td>@v.DataAplicacao.ToString("dd/MM/yyyy")</td>
+                            <td>@v.DataProximaDose.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">Nenhuma vacina registrada.</p>
+        }
+    </div>
+
     <a asp-controller="Agenda" asp-action="Index" class="btn btn-secondary">Voltar</a>
-</form>
+}
+else
+{
+    <!-- ===== Formulário da Evolução ===== -->
+    <form asp-action="Atender" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Campos escondidos: o vet não digita -->
+        <input type="hidden" asp-for="Prontuario.Id" />
+        <input type="hidden" asp-for="Prontuario.ConsultaId" />
+
+        <div class="mb-3">
+            <label asp-for="Prontuario.Descricao" class="form-label">Evolução</label>
+            <textarea asp-for="Prontuario.Descricao" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Prontuario.Diagnostico" class="form-label">Diagnóstico</label>
+            <textarea asp-for="Prontuario.Diagnostico" class="form-control" rows="2"></textarea>
+        </div>
+
+        <!-- ===== Lista de Tratamentos (histórico com início/fim) ===== -->
+        <div class="mb-3">
+            <label class="form-label">Tratamentos</label>
+
+            @if (Model.HistoricoTratamentos.Any())
+            {
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Início</th>
+                            <th>Fim</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in Model.HistoricoTratamentos)
+                        {
+                            <tr>
+                                <td>@t.Descricao</td>
+                                <td>@t.DataInicio.ToString("dd/MM/yyyy")</td>
+                                <td>@(t.DataFim.HasValue ? t.DataFim.Value.ToString("dd/MM/yyyy") : "Em andamento")</td>
+                                <td class="text-end">
+                                    <a asp-action="EditarTratamento" asp-route-id="@t.Id" asp-route-consultaId="@Model.Consulta.Id"
+                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">Nenhum tratamento registrado.</p>
+            }
+
+            <div class="row g-2 align-items-end border rounded p-2">
+                <div class="col-md-6">
+                    <label asp-for="NovoTratamento.Descricao" class="form-label">Novo tratamento</label>
+                    <input asp-for="NovoTratamento.Descricao" class="form-control" placeholder="Ex: Amoxicilina 250mg 1x ao dia" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="NovoTratamento.DataInicio" class="form-label">Início</label>
+                    <input type="date" name="NovoTratamento.DataInicio" class="form-control"
+                           value="@(Model.NovoTratamento.DataInicio == default ? "" : Model.NovoTratamento.DataInicio.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="NovoTratamento.DataFim" class="form-label">Fim</label>
+                    <input asp-for="NovoTratamento.DataFim" type="date" class="form-control" />
+                </div>
+            </div>
+            <small class="text-muted">Preencha a descrição acima para adicionar um novo tratamento à lista ao salvar.</small>
+        </div>
+
+        <!-- ===== Lista de Exames (escolhidos do catálogo) ===== -->
+        <div class="mb-3">
+            <label class="form-label">Exames</label>
+
+            @if (Model.HistoricoExames.Any())
+            {
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Exame</th>
+                            <th>Resultado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.HistoricoExames)
+                        {
+                            <tr>
+                                <td>@e.Exame?.Nome</td>
+                                <td>@(string.IsNullOrWhiteSpace(e.Resultado) ? "Pendente" : e.Resultado)</td>
+                                <td class="text-end">
+                                    <a asp-action="EditarExame" asp-route-id="@e.Id" asp-route-consultaId="@Model.Consulta.Id"
+                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <div class="row g-2 align-items-end border rounded p-2">
+                <div class="col-md-8">
+                    <label class="form-label">Novo exame</label>
+                    <select name="NovoExame.ExameId" class="form-select">
+                        <option value="">-- selecione um exame --</option>
+                        @foreach (var ex in Model.ExamesDisponiveis)
+                        {
+                            <option value="@ex.Value">@ex.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <small class="text-muted">Escolha um exame do catálogo para adicioná-lo à lista ao salvar. O resultado é preenchido depois, no botão Editar.</small>
+        </div>
+
+        <!-- ===== Lista de Vacinas (escolhidas do catálogo) ===== -->
+        <div class="mb-3">
+            <label class="form-label">Vacinas</label>
+
+            @if (Model.HistoricoVacinas.Any())
+            {
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Vacina</th>
+                            <th>Aplicação</th>
+                            <th>Próxima dose</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model.HistoricoVacinas)
+                        {
+                            <tr>
+                                <td>@v.Vacina?.Nome</td>
+                                <td>@v.DataAplicacao.ToString("dd/MM/yyyy")</td>
+                                <td>@v.DataProximaDose.ToString("dd/MM/yyyy")</td>
+                                <td class="text-end">
+                                    <a asp-action="EditarVacina" asp-route-id="@v.Id" asp-route-consultaId="@Model.Consulta.Id"
+                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+            <div class="row g-2 align-items-end border rounded p-2">
+                <div class="col-md-6">
+                    <label class="form-label">Nova vacina</label>
+                    <select name="NovaVacina.VacinaId" class="form-select">
+                        <option value="">-- selecione uma vacina --</option>
+                        @foreach (var vac in Model.VacinasDisponiveis)
+                        {
+                            <option value="@vac.Value">@vac.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Aplicação</label>
+                    <input type="date" name="NovaVacina.DataAplicacao" class="form-control"
+                           value="@(Model.NovaVacina.DataAplicacao == default ? "" : Model.NovaVacina.DataAplicacao.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Próxima dose</label>
+                    <input type="date" name="NovaVacina.DataProximaDose" class="form-control"
+                           value="@(Model.NovaVacina.DataProximaDose == default ? "" : Model.NovaVacina.DataProximaDose.ToString("yyyy-MM-dd"))" />
+                </div>
+            </div>
+            <small class="text-muted">Escolha uma vacina do catálogo para aplicá-la ao salvar.</small>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="FinalizarConsulta" class="form-check-input" />
+            <label asp-for="FinalizarConsulta" class="form-check-label">
+                Finalizar consulta (marca como Realizada)
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a asp-controller="Agenda" asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+}
 
 <hr class="my-4" />
 
@@ -78,35 +332,6 @@ else
                     <td>@c.DataConsulta.ToString("dd/MM/yyyy")</td>
                     <td>@c.TipoConsulta?.Nome</td>
                     <td>@c.Situacao</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-<!-- ===== Histórico de Vacinas ===== -->
-<h4 class="mt-4">💉 Histórico de vacinas</h4>
-@if (!Model.HistoricoVacinas.Any())
-{
-    <p class="text-muted">Nenhuma vacina registrada.</p>
-}
-else
-{
-    <table class="table table-sm table-striped">
-        <thead>
-            <tr>
-                <th>Vacina</th>
-                <th>Aplicação</th>
-                <th>Próxima dose</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var v in Model.HistoricoVacinas)
-            {
-                <tr>
-                    <td>@v.Vacina?.Nome</td>
-                    <td>@v.DataAplicacao.ToString("dd/MM/yyyy")</td>
-                    <td>@v.DataProximaDose.ToString("dd/MM/yyyy")</td>
                 </tr>
             }
         </tbody>

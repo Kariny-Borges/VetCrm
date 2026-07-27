@@ -1,4 +1,4 @@
-namespace VetCrm.Models
+namespace VetCrm.ViewModels
 {
     public class ErrorViewModel
     {

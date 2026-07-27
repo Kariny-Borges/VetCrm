@@ -20,5 +20,7 @@
         public List<Consulta> Consultas { get; set; } = new List<Consulta>();
         public List<Prontuario> Prontuarios { get; set; } = new List<Prontuario>();
         public List<PacienteVacina> PacienteVacinas { get; set; } = new List<PacienteVacina>();
+        public List<Tratamento> Tratamentos { get; set; } = new List<Tratamento>();
+        public List<PacienteExame> PacienteExames { get; set; } = new List<PacienteExame>();
     }
 }

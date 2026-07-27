@@ -56,6 +56,10 @@ using (var scope = app.Services.CreateScope())
         });
         db.SaveChanges();
     }
+
+    // Dados fictícios pra encher as listas e testar os filtros.
+    // Comente esta linha quando não precisar mais (ver Data/DadosTeste.cs).
+    DadosTeste.Semear(db);
 }
 
 app.Run();

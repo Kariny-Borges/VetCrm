@@ -1,0 +1,37 @@
+@model VetCrm.ViewModels.EditarVacinaViewModel
+
+@{
+    ViewData["Title"] = "Editar vacina";
+}
+
+<h2>💉 Editar vacina</h2>
+
+<hr />
+
+<form asp-action="EditarVacina" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Campos que o vet não digita, mas o formulário precisa devolver -->
+    <input type="hidden" name="consultaId" value="@ViewBag.ConsultaId" />
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="VacinaId" class="form-label">Vacina</label>
+        <select asp-for="VacinaId" asp-items="ViewBag.VacinasDisponiveis" class="form-select"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataAplicacao" class="form-label">Aplicação</label>
+        <input type="date" name="DataAplicacao" class="form-control"
+               value="@(Model.DataAplicacao == default ? "" : Model.DataAplicacao.ToString("yyyy-MM-dd"))" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataProximaDose" class="form-label">Próxima dose</label>
+        <input type="date" name="DataProximaDose" class="form-control"
+               value="@(Model.DataProximaDose == default ? "" : Model.DataProximaDose.ToString("yyyy-MM-dd"))" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-action="Atender" asp-route-id="@ViewBag.ConsultaId" class="btn btn-secondary">Voltar</a>
+</form>

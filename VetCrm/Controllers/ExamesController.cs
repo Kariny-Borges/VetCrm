@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -56,15 +57,19 @@ namespace VetCrm.Controllers
         // POST: Exames/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Exame exame)
+        public async Task<IActionResult> Create(ExameViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var exame = new Exame
+                {
+                    Nome = model.Nome
+                };
                 _context.Add(exame);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(exame);
+            return View(model);
         }
 
         // GET: Exames/Edit/5
@@ -80,15 +85,21 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            return View(exame);
+
+            var model = new ExameViewModel
+            {
+                Id = exame.Id,
+                Nome = exame.Nome
+            };
+            return View(model);
         }
 
         // POST: Exames/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Exame exame)
+        public async Task<IActionResult> Edit(int id, ExameViewModel model)
         {
-            if (id != exame.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -97,12 +108,18 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(exame);
+                    var exame = await _context.Exames.FindAsync(id);
+                    if (exame == null)
+                    {
+                        return NotFound();
+                    }
+
+                    exame.Nome = model.Nome;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExameExists(exame.Id))
+                    if (!ExameExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +130,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(exame);
+            return View(model);
         }
 
         // GET: Exames/Delete/5

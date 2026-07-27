@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -58,19 +59,21 @@ namespace VetCrm.Controllers
         }
 
         // POST: Especies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Especie especie)
+        public async Task<IActionResult> Create(EspecieViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var especie = new Especie
+                {
+                    Nome = model.Nome
+                };
                 _context.Add(especie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(especie);
+            return View(model);
         }
 
         // GET: Especies/Edit/5
@@ -86,17 +89,21 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            return View(especie);
+
+            var model = new EspecieViewModel
+            {
+                Id = especie.Id,
+                Nome = especie.Nome
+            };
+            return View(model);
         }
 
         // POST: Especies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Especie especie)
+        public async Task<IActionResult> Edit(int id, EspecieViewModel model)
         {
-            if (id != especie.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -105,12 +112,18 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(especie);
+                    var especie = await _context.Especies.FindAsync(id);
+                    if (especie == null)
+                    {
+                        return NotFound();
+                    }
+
+                    especie.Nome = model.Nome;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EspecieExists(especie.Id))
+                    if (!EspecieExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -121,7 +134,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(especie);
+            return View(model);
         }
 
         // GET: Especies/Delete/5

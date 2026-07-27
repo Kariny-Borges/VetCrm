@@ -22,6 +22,8 @@ namespace VetCrm.Data
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Perfil> Perfis { get; set; }
         public DbSet<Exame> Exames { get; set; }
+        public DbSet<PacienteExame> PacienteExames { get; set; }
+        public DbSet<Tratamento> Tratamentos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +93,46 @@ namespace VetCrm.Data
                 .HasOne(pv => pv.Paciente)
                 .WithMany(p => p.PacienteVacinas)
                 .HasForeignKey(pv => pv.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // PacienteVacina → Prontuario (de qual atendimento veio; opcional)
+            modelBuilder.Entity<PacienteVacina>()
+                .HasOne(pv => pv.Prontuario)
+                .WithMany()
+                .HasForeignKey(pv => pv.ProntuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tratamento>()
+                .HasOne(t => t.Paciente)
+                .WithMany(p => p.Tratamentos)
+                .HasForeignKey(t => t.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tratamento>()
+                .HasOne(t => t.Prontuario)
+                .WithMany()
+                .HasForeignKey(t => t.ProntuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // PacienteExame → Paciente (a lista de exames do paciente)
+            modelBuilder.Entity<PacienteExame>()
+                .HasOne(pe => pe.Paciente)
+                .WithMany(p => p.PacienteExames)
+                .HasForeignKey(pe => pe.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // PacienteExame → Exame (qual exame do catálogo)
+            modelBuilder.Entity<PacienteExame>()
+                .HasOne(pe => pe.Exame)
+                .WithMany()
+                .HasForeignKey(pe => pe.ExameId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // PacienteExame → Prontuario (de qual atendimento veio)
+            modelBuilder.Entity<PacienteExame>()
+                .HasOne(pe => pe.Prontuario)
+                .WithMany()
+                .HasForeignKey(pe => pe.ProntuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Veterinario → Especialidade

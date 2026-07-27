@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -60,15 +61,19 @@ namespace VetCrm.Controllers
         // POST: Especialidades/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Especialidade especialidade)
+        public async Task<IActionResult> Create(EspecialidadeViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var especialidade = new Especialidade
+                {
+                    Nome = model.Nome
+                };
                 _context.Add(especialidade);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(especialidade);
+            return View(model);
         }
 
         // GET: Especialidades/Edit/5
@@ -84,15 +89,21 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            return View(especialidade);
+
+            var model = new EspecialidadeViewModel
+            {
+                Id = especialidade.Id,
+                Nome = especialidade.Nome
+            };
+            return View(model);
         }
 
         // POST: Especialidades/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Especialidade especialidade)
+        public async Task<IActionResult> Edit(int id, EspecialidadeViewModel model)
         {
-            if (id != especialidade.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -101,12 +112,18 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(especialidade);
+                    var especialidade = await _context.Especialidades.FindAsync(id);
+                    if (especialidade == null)
+                    {
+                        return NotFound();
+                    }
+
+                    especialidade.Nome = model.Nome;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EspecialidadeExists(especialidade.Id))
+                    if (!EspecialidadeExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -117,7 +134,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(especialidade);
+            return View(model);
         }
 
         // GET: Especialidades/Delete/5

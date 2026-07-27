@@ -1,0 +1,38 @@
+@model VetCrm.ViewModels.EditarTratamentoViewModel
+
+@{
+    ViewData["Title"] = "Editar tratamento";
+}
+
+<h2>✏️ Editar tratamento</h2>
+
+<hr />
+
+<form asp-action="EditarTratamento" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Campos que o vet não digita, mas o formulário precisa devolver -->
+    <input type="hidden" name="consultaId" value="@ViewBag.ConsultaId" />
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label">Descrição</label>
+        <input asp-for="Descricao" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataInicio" class="form-label">Início</label>
+        <input type="date" name="DataInicio" class="form-control"
+               value="@(Model.DataInicio == default ? "" : Model.DataInicio.ToString("yyyy-MM-dd"))" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataFim" class="form-label">Fim</label>
+        <input type="date" name="DataFim" class="form-control"
+               value="@(Model.DataFim.HasValue ? Model.DataFim.Value.ToString("yyyy-MM-dd") : "")" />
+        <small class="text-muted">Deixe em branco enquanto o tratamento estiver em andamento.</small>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a asp-action="Atender" asp-route-id="@ViewBag.ConsultaId" class="btn btn-secondary">Voltar</a>
+</form>

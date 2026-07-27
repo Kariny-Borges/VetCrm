@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -50,19 +51,22 @@ namespace VetCrm.Controllers
         }
 
         // POST: Contato/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Tipo,Valor")] Contato contato)
+        public async Task<IActionResult> Create(ContatoViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var contato = new Contato
+                {
+                    Tipo = model.Tipo,
+                    Valor = model.Valor
+                };
                 _context.Add(contato);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(contato);
+            return View(model);
         }
 
         // GET: Contato/Edit/5
@@ -78,17 +82,22 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            return View(contato);
+
+            var model = new ContatoViewModel
+            {
+                Id = contato.Id,
+                Tipo = contato.Tipo,
+                Valor = contato.Valor
+            };
+            return View(model);
         }
 
         // POST: Contato/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Tipo,Valor")] Contato contato)
+        public async Task<IActionResult> Edit(int id, ContatoViewModel model)
         {
-            if (id != contato.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -97,12 +106,20 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(contato);
+                    var contato = await _context.Contato.FindAsync(id);
+                    if (contato == null)
+                    {
+                        return NotFound();
+                    }
+
+                    contato.Tipo = model.Tipo;
+                    contato.Valor = model.Valor;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContatoExists(contato.Id))
+                    if (!ContatoExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +130,7 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(contato);
+            return View(model);
         }
 
         // GET: Contato/Delete/5

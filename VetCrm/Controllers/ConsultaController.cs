@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -70,18 +71,26 @@ namespace VetCrm.Controllers
         // POST: Consulta/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataConsulta,Observacoes,TipoConsultaId,PacienteId,VeterinarioId")] Consulta consulta)
+        public async Task<IActionResult> Create(ConsultaViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var consulta = new Consulta
+                {
+                    DataConsulta = model.DataConsulta,
+                    Observacoes = model.Observacoes,
+                    TipoConsultaId = model.TipoConsultaId,
+                    PacienteId = model.PacienteId,
+                    VeterinarioId = model.VeterinarioId
+                };
                 _context.Add(consulta);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
-            return View(consulta);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", model.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", model.TipoConsultaId);
+            return View(model);
         }
 
         // GET: Consulta/Edit/5
@@ -97,18 +106,29 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
-            return View(consulta);
+
+            var model = new ConsultaViewModel
+            {
+                Id = consulta.Id,
+                DataConsulta = consulta.DataConsulta,
+                Observacoes = consulta.Observacoes,
+                TipoConsultaId = consulta.TipoConsultaId,
+                PacienteId = consulta.PacienteId,
+                VeterinarioId = consulta.VeterinarioId
+            };
+
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", model.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", model.TipoConsultaId);
+            return View(model);
         }
 
         // POST: Consulta/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataConsulta,Observacoes,TipoConsultaId,PacienteId,VeterinarioId")] Consulta consulta)
+        public async Task<IActionResult> Edit(int id, ConsultaViewModel model)
         {
-            if (id != consulta.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -117,12 +137,23 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(consulta);
+                    var consulta = await _context.Consultas.FindAsync(id);
+                    if (consulta == null)
+                    {
+                        return NotFound();
+                    }
+
+                    consulta.DataConsulta = model.DataConsulta;
+                    consulta.Observacoes = model.Observacoes;
+                    consulta.TipoConsultaId = model.TipoConsultaId;
+                    consulta.PacienteId = model.PacienteId;
+                    consulta.VeterinarioId = model.VeterinarioId;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ConsultaExists(consulta.Id))
+                    if (!ConsultaExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -133,10 +164,10 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consulta.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consulta.VeterinarioId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consulta.TipoConsultaId);
-            return View(consulta);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", model.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", model.TipoConsultaId);
+            return View(model);
         }
 
         // POST: Consulta/MudarSituacao

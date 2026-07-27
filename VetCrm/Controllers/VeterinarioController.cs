@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -61,20 +62,25 @@ namespace VetCrm.Controllers
         }
 
         // POST: Veterinario/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,CRMV,EspecialidadeId")] Veterinario veterinario)
+        public async Task<IActionResult> Create(VeterinarioViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var veterinario = new Veterinario
+                {
+                    Nome = model.Nome,
+                    CRMV = model.CRMV,
+                    EspecialidadeId = model.EspecialidadeId
+                };
+
                 _context.Add(veterinario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
-            return View(veterinario);
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", model.EspecialidadeId);
+            return View(model);
         }
 
         // GET: Veterinario/Edit/5
@@ -90,18 +96,25 @@ namespace VetCrm.Controllers
             {
                 return NotFound();
             }
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
-            return View(veterinario);
+
+            var model = new VeterinarioViewModel
+            {
+                Id = veterinario.Id,
+                Nome = veterinario.Nome,
+                CRMV = veterinario.CRMV,
+                EspecialidadeId = veterinario.EspecialidadeId
+            };
+
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", model.EspecialidadeId);
+            return View(model);
         }
 
         // POST: Veterinario/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,CRMV,EspecialidadeId")] Veterinario veterinario)
+        public async Task<IActionResult> Edit(int id, VeterinarioViewModel model)
         {
-            if (id != veterinario.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -110,12 +123,21 @@ namespace VetCrm.Controllers
             {
                 try
                 {
-                    _context.Update(veterinario);
+                    var veterinario = await _context.Veterinarios.FindAsync(id);
+                    if (veterinario == null)
+                    {
+                        return NotFound();
+                    }
+
+                    veterinario.Nome = model.Nome;
+                    veterinario.CRMV = model.CRMV;
+                    veterinario.EspecialidadeId = model.EspecialidadeId;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VeterinarioExists(veterinario.Id))
+                    if (!VeterinarioExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -126,8 +148,8 @@ namespace VetCrm.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinario.EspecialidadeId);
-            return View(veterinario);
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", model.EspecialidadeId);
+            return View(model);
         }
 
         // GET: Veterinario/Delete/5
