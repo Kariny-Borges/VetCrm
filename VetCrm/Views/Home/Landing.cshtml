@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "VetCrm — Gestão para clínicas veterinárias";
+}
+
+<!-- ===== 1. HERO: o que é + uma única ação ===== -->
+<div class="p-5 mb-5 rounded-3 text-center" style="background-color:#eef7f0">
+    <div style="font-size:4rem">🐾</div>
+
+    <h1 class="display-5 fw-bold mt-2">A clínica inteira em um lugar só</h1>
+
+    <p class="lead text-muted mx-auto mt-3" style="max-width:520px">
+        Organize toda a gestão da sua clínica em um único sistema.
+        Cadastre pacientes, agende consultas, registre prontuários e acompanhe vacinas de forma simples, segura e sem papel.
+    </p>
+</div>
+
+<!-- ===== 2. O QUE O SISTEMA RESOLVE ===== -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="text-center px-3">
+            <div style="font-size:2.5rem">🐶</div>
+            <h5 class="mt-3">Cada animal com sua ficha</h5>
+            <p class="text-muted small">
+                Espécie, raça, peso e dono. O histórico completo do animal
+                aparece junto na hora do atendimento.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="text-center px-3">
+            <div style="font-size:2.5rem">📅</div>
+            <h5 class="mt-3">Agenda por veterinário</h5>
+            <p class="text-muted small">
+                Veja o dia de cada profissional e abra o atendimento
+                direto da consulta agendada.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="text-center px-3">
+            <div style="font-size:2.5rem">💉</div>
+            <h5 class="mt-3">Vacinas e exames no lugar certo</h5>
+            <p class="text-muted small">
+                Registre durante a consulta e lance o resultado do exame
+                quando ele ficar pronto.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 3. FECHAMENTO: repete a ação ===== -->
+<div class="text-center border-top pt-5 pb-3">
+    <h4>Já tem uma conta?</h4>
+    <p class="text-muted">Entre com seu login para começar.</p>
+    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success px-4">
+        Entrar no sistema
+    </a>
+</div>

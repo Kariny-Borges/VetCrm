@@ -1,8 +1,8 @@
-using VetCrm.ViewModels;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using VetCrm.Models;
+using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
@@ -16,9 +16,17 @@ namespace VetCrm.Controllers
             _logger = logger;
         }
 
+        // A raiz do site (/) cai aqui.
+        // Visitante vê a landing page; quem já entrou vê o painel.
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return View("Dashboard");
+            }
+
+            return View("Landing");
         }
 
         [AllowAnonymous] // Privacy continua acessível sem login
