@@ -1,0 +1,28 @@
+﻿@model IEnumerable<VetCrm.ViewModels.ServicoViewModel>
+
+<h2>Serviços</h2>
+
+<a asp-action="Create" class="btn btn-primary">Novo Serviço</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nome</td>
+                <td>@item.Preco</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

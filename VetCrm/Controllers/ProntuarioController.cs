@@ -23,8 +23,28 @@ namespace VetCrm.Controllers
         // GET: Prontuario
         public async Task<IActionResult> Index()
         {
-            var vetCrmContext = _context.Prontuarios.Include(p => p.Consulta).Include(p => p.Paciente);
-            return View(await vetCrmContext.ToListAsync());
+            var prontuarios = await _context.Prontuarios
+                .Include(p => p.Consulta)
+                .Include(p => p.Paciente)
+                .ToListAsync();
+
+            var prontuariosViewModel = prontuarios.Select(p => new ProntuarioViewModel
+            {
+                Id = p.Id,
+                Descricao = p.Descricao,
+                Diagnostico = p.Diagnostico,
+                Tratamento = p.Tratamento,
+                DataRegistro = p.DataRegistro,
+                PacienteId = p.PacienteId,
+                ConsultaId = p.ConsultaId,
+                Paciente = p.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = p.Paciente.Id,
+                    Nome = p.Paciente.Nome
+                }
+            }).ToList();
+
+            return View(prontuariosViewModel);
         }
 
         // GET: Prontuario/Details/5
@@ -45,7 +65,33 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(prontuario);
+            var prontuarioViewModel = new ProntuarioViewModel
+            {
+                Id = prontuario.Id,
+                Descricao = prontuario.Descricao,
+                Diagnostico = prontuario.Diagnostico,
+                Tratamento = prontuario.Tratamento,
+                DataRegistro = prontuario.DataRegistro,
+                PacienteId = prontuario.PacienteId,
+                ConsultaId = prontuario.ConsultaId,
+                Paciente = prontuario.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = prontuario.Paciente.Id,
+                    Nome = prontuario.Paciente.Nome
+                },
+                Consulta = prontuario.Consulta == null ? null : new ConsultaViewModel
+                {
+                    Id = prontuario.Consulta.Id,
+                    DataConsulta = prontuario.Consulta.DataConsulta,
+                    Paciente = prontuario.Consulta.Paciente == null ? null : new PacienteViewModel
+                    {
+                        Id = prontuario.Consulta.Paciente.Id,
+                        Nome = prontuario.Consulta.Paciente.Nome
+                    }
+                }
+            };
+
+            return View(prontuarioViewModel);
         }
 
         // GET: Prontuario/Atender/5   (o 5 é o Id da CONSULTA, não do prontuário)
@@ -534,7 +580,23 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(prontuario);
+            var prontuarioViewModel = new ProntuarioViewModel
+            {
+                Id = prontuario.Id,
+                Descricao = prontuario.Descricao,
+                Diagnostico = prontuario.Diagnostico,
+                Tratamento = prontuario.Tratamento,
+                DataRegistro = prontuario.DataRegistro,
+                PacienteId = prontuario.PacienteId,
+                ConsultaId = prontuario.ConsultaId,
+                Paciente = prontuario.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = prontuario.Paciente.Id,
+                    Nome = prontuario.Paciente.Nome
+                }
+            };
+
+            return View(prontuarioViewModel);
         }
 
         // POST: Prontuario/Delete/5

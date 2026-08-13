@@ -30,8 +30,15 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca));
             }
 
+            var especies = await query.ToListAsync();
+            var especiesViewModel = especies.Select(e => new EspecieViewModel
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(especiesViewModel);
         }
 
         // GET: Especies/Details/5
@@ -49,7 +56,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(especie);
+            var especieViewModel = new EspecieViewModel
+            {
+                Id = especie.Id,
+                Nome = especie.Nome
+            };
+
+            return View(especieViewModel);
         }
 
         // GET: Especies/Create
@@ -152,7 +165,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(especie);
+            var especieViewModel = new EspecieViewModel
+            {
+                Id = especie.Id,
+                Nome = especie.Nome
+            };
+
+            return View(especieViewModel);
         }
 
         // POST: Especies/Delete/5

@@ -31,8 +31,22 @@ namespace VetCrm.Controllers
                 query = query.Where(v => v.Nome.Contains(busca) || v.CRMV.Contains(busca) || v.Especialidade.Nome.Contains(busca));
             }
 
+            var veterinarios = await query.ToListAsync();
+            var veterinariosViewModel = veterinarios.Select(v => new VeterinarioViewModel
+            {
+                Id = v.Id,
+                Nome = v.Nome,
+                CRMV = v.CRMV,
+                EspecialidadeId = v.EspecialidadeId,
+                Especialidade = v.Especialidade == null ? null : new EspecialidadeViewModel
+                {
+                    Id = v.Especialidade.Id,
+                    Nome = v.Especialidade.Nome
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(veterinariosViewModel);
         }
 
         // GET: Veterinario/Details/5
@@ -51,13 +65,32 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(veterinario);
+            var veterinarioViewModel = new VeterinarioViewModel
+            {
+                Id = veterinario.Id,
+                Nome = veterinario.Nome,
+                CRMV = veterinario.CRMV,
+                EspecialidadeId = veterinario.EspecialidadeId,
+                Especialidade = veterinario.Especialidade == null ? null : new EspecialidadeViewModel
+                {
+                    Id = veterinario.Especialidade.Id,
+                    Nome = veterinario.Especialidade.Nome
+                }
+            };
+
+            return View(veterinarioViewModel);
         }
 
         // GET: Veterinario/Create
         public IActionResult Create()
         {
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome");
+            var especialidadesViewModel = _context.Especialidades.Select(e=> new EspecialidadeViewModel 
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToList();
+
+            ViewData["EspecialidadeId"] = new SelectList(especialidadesViewModel, "Id", "Nome");
             return View();
         }
 
@@ -132,7 +165,7 @@ namespace VetCrm.Controllers
                     veterinario.Nome = model.Nome;
                     veterinario.CRMV = model.CRMV;
                     veterinario.EspecialidadeId = model.EspecialidadeId;
-
+                    _context.Veterinarios.Update(veterinario);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -168,7 +201,20 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(veterinario);
+            var veterinarioViewModel = new VeterinarioViewModel
+            {
+                Id = veterinario.Id,
+                Nome = veterinario.Nome,
+                CRMV = veterinario.CRMV,
+                EspecialidadeId = veterinario.EspecialidadeId,
+                Especialidade = veterinario.Especialidade == null ? null : new EspecialidadeViewModel
+                {
+                    Id = veterinario.Especialidade.Id,
+                    Nome = veterinario.Especialidade.Nome
+                }
+            };
+
+            return View(veterinarioViewModel);
         }
 
         // POST: Veterinario/Delete/5

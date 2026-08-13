@@ -1,4 +1,4 @@
-@model Veterinario
+@model VetCrm.ViewModels.VeterinarioViewModel
 
 @{
     ViewData["Title"] = "Excluir Veterinario";
@@ -28,7 +28,7 @@
             <dt class="col-sm-4">CRMV</dt>
             <dd class="col-sm-8">@Model.CRMV</dd>
             <dt class="col-sm-4">Especialidade</dt>
-            <dd class="col-sm-8">@Model.Especialidade</dd>
+            <dd class="col-sm-8">@Model.Especialidade?.Nome</dd>
         </dl>
 
         <form asp-action="Delete">

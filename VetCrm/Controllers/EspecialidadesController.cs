@@ -30,8 +30,15 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca));
             }
 
+            var especialidades = await query.ToListAsync();
+            var especialidadesViewModel = especialidades.Select(e => new EspecialidadeViewModel
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(especialidadesViewModel);
         }
 
         // GET: Especialidades/Details/5
@@ -49,7 +56,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(especialidade);
+            var especialidadeViewModel = new EspecialidadeViewModel
+            {
+                Id = especialidade.Id,
+                Nome = especialidade.Nome
+            };
+
+            return View(especialidadeViewModel);
         }
 
         // GET: Especialidades/Create
@@ -152,7 +165,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(especialidade);
+            var especialidadeViewModel = new EspecialidadeViewModel
+            {
+                Id = especialidade.Id,
+                Nome = especialidade.Nome
+            };
+
+            return View(especialidadeViewModel);
         }
 
         // POST: Especialidades/Delete/5

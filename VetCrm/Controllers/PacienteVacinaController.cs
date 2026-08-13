@@ -23,8 +23,31 @@ namespace VetCrm.Controllers
         // GET: PacienteVacina
         public async Task<IActionResult> Index()
         {
-            var vetCrmContext = _context.PacienteVacinas.Include(p => p.Paciente).Include(p => p.Vacina);
-            return View(await vetCrmContext.ToListAsync());
+            var pacienteVacinas = await _context.PacienteVacinas
+                .Include(p => p.Paciente)
+                .Include(p => p.Vacina)
+                .ToListAsync();
+
+            var pacienteVacinasViewModel = pacienteVacinas.Select(pv => new PacienteVacinaViewModel
+            {
+                Id = pv.Id,
+                PacienteId = pv.PacienteId,
+                VacinaId = pv.VacinaId,
+                DataAplicacao = pv.DataAplicacao,
+                DataProximaDose = pv.DataProximaDose,
+                Paciente = pv.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = pv.Paciente.Id,
+                    Nome = pv.Paciente.Nome
+                },
+                Vacina = pv.Vacina == null ? null : new VacinaViewModel
+                {
+                    Id = pv.Vacina.Id,
+                    Nome = pv.Vacina.Nome
+                }
+            }).ToList();
+
+            return View(pacienteVacinasViewModel);
         }
 
         // GET: PacienteVacina/Details/5
@@ -44,7 +67,26 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(pacienteVacina);
+            var pacienteVacinaViewModel = new PacienteVacinaViewModel
+            {
+                Id = pacienteVacina.Id,
+                PacienteId = pacienteVacina.PacienteId,
+                VacinaId = pacienteVacina.VacinaId,
+                DataAplicacao = pacienteVacina.DataAplicacao,
+                DataProximaDose = pacienteVacina.DataProximaDose,
+                Paciente = pacienteVacina.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = pacienteVacina.Paciente.Id,
+                    Nome = pacienteVacina.Paciente.Nome
+                },
+                Vacina = pacienteVacina.Vacina == null ? null : new VacinaViewModel
+                {
+                    Id = pacienteVacina.Vacina.Id,
+                    Nome = pacienteVacina.Vacina.Nome
+                }
+            };
+
+            return View(pacienteVacinaViewModel);
         }
 
         // GET: PacienteVacina/Create
@@ -169,7 +211,26 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(pacienteVacina);
+            var pacienteVacinaViewModel = new PacienteVacinaViewModel
+            {
+                Id = pacienteVacina.Id,
+                PacienteId = pacienteVacina.PacienteId,
+                VacinaId = pacienteVacina.VacinaId,
+                DataAplicacao = pacienteVacina.DataAplicacao,
+                DataProximaDose = pacienteVacina.DataProximaDose,
+                Paciente = pacienteVacina.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = pacienteVacina.Paciente.Id,
+                    Nome = pacienteVacina.Paciente.Nome
+                },
+                Vacina = pacienteVacina.Vacina == null ? null : new VacinaViewModel
+                {
+                    Id = pacienteVacina.Vacina.Id,
+                    Nome = pacienteVacina.Vacina.Nome
+                }
+            };
+
+            return View(pacienteVacinaViewModel);
         }
 
         // POST: PacienteVacina/Delete/5

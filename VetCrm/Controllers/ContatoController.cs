@@ -23,7 +23,15 @@ namespace VetCrm.Controllers
         // GET: Contato
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contato.ToListAsync());
+            var contatos = await _context.Contato.ToListAsync();
+            var contatosViewModel = contatos.Select(c => new ContatoViewModel
+            {
+                Id = c.Id,
+                Tipo = c.Tipo,
+                Valor = c.Valor
+            }).ToList();
+
+            return View(contatosViewModel);
         }
 
         // GET: Contato/Details/5
@@ -41,13 +49,20 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(contato);
+            var contatoViewModel = new ContatoViewModel
+            {
+                Id = contato.Id,
+                Tipo = contato.Tipo,
+                Valor = contato.Valor
+            };
+
+            return View(contatoViewModel);
         }
 
         // GET: Contato/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new ContatoViewModel());
         }
 
         // POST: Contato/Create
@@ -148,7 +163,14 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(contato);
+            var contatoViewModel = new ContatoViewModel
+            {
+                Id = contato.Id,
+                Tipo = contato.Tipo,
+                Valor = contato.Valor
+            };
+
+            return View(contatoViewModel);
         }
 
         // POST: Contato/Delete/5

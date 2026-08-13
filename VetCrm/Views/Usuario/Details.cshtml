@@ -1,4 +1,4 @@
-@model VetCrm.Models.Usuario
+@model VetCrm.ViewModels.UsuarioViewModel
 
 @{
     ViewData["Title"] = "Detalhes do Usuário";
@@ -64,7 +64,7 @@ else
     <input type="hidden" name="usuarioId" value="@Model.Id" />
     <select name="estabelecimentoId" class="form-select">
         <option value="">-- Selecione --</option>
-        @foreach (var e in ViewBag.Estabelecimentos as List<VetCrm.Models.Estabelecimento> ?? new())
+        @foreach (var e in ViewBag.Estabelecimentos as List<VetCrm.ViewModels.EstabelecimentoViewModel> ?? new())
         {
             <option value="@e.Id">@e.Nome</option>
         }

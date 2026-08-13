@@ -24,8 +24,19 @@ namespace VetCrm.Controllers
                 query = query.Where(v => v.Nome.Contains(busca) || v.Descricao.Contains(busca));
             }
 
+            var vacinas = await query.ToListAsync();
+            var vacinasViewModel = vacinas.Select(v => new VacinaViewModel
+            {
+                Id = v.Id,
+                Nome = v.Nome,
+                Descricao = v.Descricao,
+                Lote = v.Lote,
+                Validade = v.Validade,
+                Fabricante = v.Fabricante
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(vacinasViewModel);
         }
 
         public IActionResult Create()
@@ -96,7 +107,18 @@ namespace VetCrm.Controllers
         {
             var vacina = await _context.Vacinas.FindAsync(id);
             if (vacina == null) return NotFound();
-            return View(vacina);
+
+            var vacinaViewModel = new VacinaViewModel
+            {
+                Id = vacina.Id,
+                Nome = vacina.Nome,
+                Descricao = vacina.Descricao,
+                Lote = vacina.Lote,
+                Validade = vacina.Validade,
+                Fabricante = vacina.Fabricante
+            };
+
+            return View(vacinaViewModel);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -122,7 +144,18 @@ namespace VetCrm.Controllers
         {
             var vacina = await _context.Vacinas.FindAsync(id);
             if (vacina == null) return NotFound();
-            return View(vacina);
+
+            var vacinaViewModel = new VacinaViewModel
+            {
+                Id = vacina.Id,
+                Nome = vacina.Nome,
+                Descricao = vacina.Descricao,
+                Lote = vacina.Lote,
+                Validade = vacina.Validade,
+                Fabricante = vacina.Fabricante
+            };
+
+            return View(vacinaViewModel);
         }
     }
 }

@@ -195,6 +195,51 @@ namespace VetCrm.Migrations
                     b.ToTable("Exames");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.FormaPagamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FormasPagamento");
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Internacao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataEntrada")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataSaida")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PacienteId");
+
+                    b.ToTable("Internacoes");
+                });
+
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>
                 {
                     b.Property<int>("Id")
@@ -465,6 +510,26 @@ namespace VetCrm.Migrations
                     b.ToTable("Racas");
                 });
 
+            modelBuilder.Entity("VetCrm.Models.Servico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Servicos");
+                });
+
             modelBuilder.Entity("VetCrm.Models.TipoConsulta", b =>
                 {
                     b.Property<int>("Id")
@@ -702,6 +767,17 @@ namespace VetCrm.Migrations
                     b.HasOne("VetCrm.Models.Pessoa", null)
                         .WithMany("Contatos")
                         .HasForeignKey("PessoaId");
+                });
+
+            modelBuilder.Entity("VetCrm.Models.Internacao", b =>
+                {
+                    b.HasOne("VetCrm.Models.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Paciente");
                 });
 
             modelBuilder.Entity("VetCrm.Models.Paciente", b =>

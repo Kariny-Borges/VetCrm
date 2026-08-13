@@ -25,8 +25,21 @@ namespace VetCrm.Controllers
                 query = query.Where(r => r.Nome.Contains(busca) || r.Especie.Nome.Contains(busca));
             }
 
+            var racas = await query.ToListAsync();
+            var racasViewModel = racas.Select(r => new RacaViewModel
+            {
+                Id = r.Id,
+                Nome = r.Nome,
+                EspecieId = r.EspecieId,
+                Especie = r.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = r.Especie.Id,
+                    Nome = r.Especie.Nome
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(racasViewModel);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -34,7 +47,20 @@ namespace VetCrm.Controllers
             if (id == null) return NotFound();
             var raca = await _context.Racas.Include(r => r.Especie).FirstOrDefaultAsync(m => m.Id == id);
             if (raca == null) return NotFound();
-            return View(raca);
+
+            var racaViewModel = new RacaViewModel
+            {
+                Id = raca.Id,
+                Nome = raca.Nome,
+                EspecieId = raca.EspecieId,
+                Especie = raca.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = raca.Especie.Id,
+                    Nome = raca.Especie.Nome
+                }
+            };
+
+            return View(racaViewModel);
         }
 
         public IActionResult Create()
@@ -114,7 +140,20 @@ namespace VetCrm.Controllers
             if (id == null) return NotFound();
             var raca = await _context.Racas.Include(r => r.Especie).FirstOrDefaultAsync(m => m.Id == id);
             if (raca == null) return NotFound();
-            return View(raca);
+
+            var racaViewModel = new RacaViewModel
+            {
+                Id = raca.Id,
+                Nome = raca.Nome,
+                EspecieId = raca.EspecieId,
+                Especie = raca.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = raca.Especie.Id,
+                    Nome = raca.Especie.Nome
+                }
+            };
+
+            return View(racaViewModel);
         }
 
         [HttpPost, ActionName("Delete")]

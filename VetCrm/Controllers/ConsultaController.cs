@@ -34,8 +34,35 @@ namespace VetCrm.Controllers
                 query = query.Where(c => c.Paciente.Nome.Contains(busca) || c.Veterinario.Nome.Contains(busca) || c.Observacoes.Contains(busca));
             }
 
+            var consultas = await query.ToListAsync();
+            var consultasViewModel = consultas.Select(c => new ConsultaViewModel
+            {
+                Id = c.Id,
+                DataConsulta = c.DataConsulta,
+                Situacao = c.Situacao,
+                Observacoes = c.Observacoes,
+                TipoConsultaId = c.TipoConsultaId,
+                PacienteId = c.PacienteId,
+                VeterinarioId = c.VeterinarioId,
+                TipoConsulta = c.TipoConsulta == null ? null : new TipoConsultaViewModel
+                {
+                    Id = c.TipoConsulta.Id,
+                    Nome = c.TipoConsulta.Nome
+                },
+                Paciente = c.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = c.Paciente.Id,
+                    Nome = c.Paciente.Nome
+                },
+                Veterinario = c.Veterinario == null ? null : new VeterinarioViewModel
+                {
+                    Id = c.Veterinario.Id,
+                    Nome = c.Veterinario.Nome
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(consultasViewModel);
         }
 
         // GET: Consulta/Details/5
@@ -56,7 +83,33 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(consulta);
+            var consultaViewModel = new ConsultaViewModel
+            {
+                Id = consulta.Id,
+                DataConsulta = consulta.DataConsulta,
+                Situacao = consulta.Situacao,
+                Observacoes = consulta.Observacoes,
+                TipoConsultaId = consulta.TipoConsultaId,
+                PacienteId = consulta.PacienteId,
+                VeterinarioId = consulta.VeterinarioId,
+                TipoConsulta = consulta.TipoConsulta == null ? null : new TipoConsultaViewModel
+                {
+                    Id = consulta.TipoConsulta.Id,
+                    Nome = consulta.TipoConsulta.Nome
+                },
+                Paciente = consulta.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = consulta.Paciente.Id,
+                    Nome = consulta.Paciente.Nome
+                },
+                Veterinario = consulta.Veterinario == null ? null : new VeterinarioViewModel
+                {
+                    Id = consulta.Veterinario.Id,
+                    Nome = consulta.Veterinario.Nome
+                }
+            };
+
+            return View(consultaViewModel);
         }
 
         // GET: Consulta/Create
@@ -65,7 +118,7 @@ namespace VetCrm.Controllers
             ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome");
             ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome");
             ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome");
-            return View();
+            return View(new ConsultaViewModel());
         }
 
         // POST: Consulta/Create
@@ -204,7 +257,33 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(consulta);
+            var consultaViewModel = new ConsultaViewModel
+            {
+                Id = consulta.Id,
+                DataConsulta = consulta.DataConsulta,
+                Situacao = consulta.Situacao,
+                Observacoes = consulta.Observacoes,
+                TipoConsultaId = consulta.TipoConsultaId,
+                PacienteId = consulta.PacienteId,
+                VeterinarioId = consulta.VeterinarioId,
+                TipoConsulta = consulta.TipoConsulta == null ? null : new TipoConsultaViewModel
+                {
+                    Id = consulta.TipoConsulta.Id,
+                    Nome = consulta.TipoConsulta.Nome
+                },
+                Paciente = consulta.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = consulta.Paciente.Id,
+                    Nome = consulta.Paciente.Nome
+                },
+                Veterinario = consulta.Veterinario == null ? null : new VeterinarioViewModel
+                {
+                    Id = consulta.Veterinario.Id,
+                    Nome = consulta.Veterinario.Nome
+                }
+            };
+
+            return View(consultaViewModel);
         }
 
         // POST: Consulta/Delete/5

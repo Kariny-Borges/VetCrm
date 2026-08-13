@@ -28,8 +28,33 @@ namespace VetCrm.Controllers
                 query = query.Where(u => u.Nome.Contains(busca) || u.Email.Contains(busca));
             }
 
+            var usuarios = await query.ToListAsync();
+            var usuariosViewModel = usuarios.Select(u => new UsuarioViewModel
+            {
+                Id = u.Id,
+                Nome = u.Nome,
+                CPF = u.CPF,
+                Telefone = u.Telefone,
+                Email = u.Email,
+                Login = u.Login,
+                Senha = u.Senha,
+                Perfil = u.Perfil,
+                EnderecoId = u.EnderecoId,
+                Endereco = u.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = u.Endereco.Id,
+                    CEP = u.Endereco.CEP,
+                    Logradouro = u.Endereco.Logradouro,
+                    Numero = u.Endereco.Numero,
+                    Complemento = u.Endereco.Complemento,
+                    Bairro = u.Endereco.Bairro,
+                    Cidade = u.Endereco.Cidade,
+                    Estado = u.Endereco.Estado
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(usuariosViewModel);
         }
 
         // GET: Usuario/Details/
@@ -45,9 +70,51 @@ namespace VetCrm.Controllers
 
             if (usuario == null) return NotFound();
 
-            ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
+            var usuarioViewModel = new UsuarioViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                CPF = usuario.CPF,
+                Telefone = usuario.Telefone,
+                Email = usuario.Email,
+                Login = usuario.Login,
+                Senha = usuario.Senha,
+                Perfil = usuario.Perfil,
+                EnderecoId = usuario.EnderecoId,
+                Endereco = usuario.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = usuario.Endereco.Id,
+                    CEP = usuario.Endereco.CEP,
+                    Logradouro = usuario.Endereco.Logradouro,
+                    Numero = usuario.Endereco.Numero,
+                    Complemento = usuario.Endereco.Complemento,
+                    Bairro = usuario.Endereco.Bairro,
+                    Cidade = usuario.Endereco.Cidade,
+                    Estado = usuario.Endereco.Estado
+                },
+                UsuarioEstabelecimentos = usuario.UsuarioEstabelecimentos.Select(ue => new UsuarioEstabelecimentoViewModel
+                {
+                    Id = ue.Id,
+                    UsuarioId = ue.UsuarioId,
+                    EstabelecimentoId = ue.EstabelecimentoId,
+                    Estabelecimento = ue.Estabelecimento == null ? null : new EstabelecimentoViewModel
+                    {
+                        Id = ue.Estabelecimento.Id,
+                        Nome = ue.Estabelecimento.Nome,
+                        CNPJ = ue.Estabelecimento.CNPJ
+                    }
+                }).ToList()
+            };
 
-            return View(usuario);
+            var estabelecimentos = await _context.Estabelecimentos.ToListAsync();
+            ViewBag.Estabelecimentos = estabelecimentos.Select(e => new EstabelecimentoViewModel
+            {
+                Id = e.Id,
+                Nome = e.Nome,
+                CNPJ = e.CNPJ
+            }).ToList();
+
+            return View(usuarioViewModel);
         }
 
         // GET: Usuario/Create - abre o formulario
@@ -233,7 +300,31 @@ namespace VetCrm.Controllers
 
             if (usuario == null) return NotFound();
 
-            return View(usuario);
+            var usuarioViewModel = new UsuarioViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                CPF = usuario.CPF,
+                Telefone = usuario.Telefone,
+                Email = usuario.Email,
+                Login = usuario.Login,
+                Senha = usuario.Senha,
+                Perfil = usuario.Perfil,
+                EnderecoId = usuario.EnderecoId,
+                Endereco = usuario.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = usuario.Endereco.Id,
+                    CEP = usuario.Endereco.CEP,
+                    Logradouro = usuario.Endereco.Logradouro,
+                    Numero = usuario.Endereco.Numero,
+                    Complemento = usuario.Endereco.Complemento,
+                    Bairro = usuario.Endereco.Bairro,
+                    Cidade = usuario.Endereco.Cidade,
+                    Estado = usuario.Endereco.Estado
+                }
+            };
+
+            return View(usuarioViewModel);
         }
 
         // POST: Usuario/Delete/

@@ -33,8 +33,37 @@ namespace VetCrm.Controllers
                 query = query.Where(p => p.Nome.Contains(busca) || p.Proprietario.Nome.Contains(busca));
             }
 
+            var pacientes = await query.ToListAsync();
+            var pacientesViewModel = pacientes.Select(p => new PacienteViewModel
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                Idade = p.Idade,
+                Sexo = p.Sexo,
+                Peso = p.Peso,
+                DataCadastro = p.DataCadastro,
+                ProprietarioId = p.ProprietarioId,
+                EspecieId = p.EspecieId,
+                RacaId = p.RacaId,
+                Proprietario = p.Proprietario == null ? null : new ProprietarioViewModel
+                {
+                    Id = p.Proprietario.Id,
+                    Nome = p.Proprietario.Nome
+                },
+                Especie = p.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = p.Especie.Id,
+                    Nome = p.Especie.Nome
+                },
+                Raca = p.Raca == null ? null : new RacaViewModel
+                {
+                    Id = p.Raca.Id,
+                    Nome = p.Raca.Nome
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(pacientesViewModel);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -49,7 +78,35 @@ namespace VetCrm.Controllers
 
             if (paciente == null) return NotFound();
 
-            return View(paciente);
+            var pacienteViewModel = new PacienteViewModel
+            {
+                Id = paciente.Id,
+                Nome = paciente.Nome,
+                Idade = paciente.Idade,
+                Sexo = paciente.Sexo,
+                Peso = paciente.Peso,
+                DataCadastro = paciente.DataCadastro,
+                ProprietarioId = paciente.ProprietarioId,
+                EspecieId = paciente.EspecieId,
+                RacaId = paciente.RacaId,
+                Proprietario = paciente.Proprietario == null ? null : new ProprietarioViewModel
+                {
+                    Id = paciente.Proprietario.Id,
+                    Nome = paciente.Proprietario.Nome
+                },
+                Especie = paciente.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = paciente.Especie.Id,
+                    Nome = paciente.Especie.Nome
+                },
+                Raca = paciente.Raca == null ? null : new RacaViewModel
+                {
+                    Id = paciente.Raca.Id,
+                    Nome = paciente.Raca.Nome
+                }
+            };
+
+            return View(pacienteViewModel);
         }
 
         public IActionResult Create()
@@ -162,7 +219,35 @@ namespace VetCrm.Controllers
 
             if (paciente == null) return NotFound();
 
-            return View(paciente);
+            var pacienteViewModel = new PacienteViewModel
+            {
+                Id = paciente.Id,
+                Nome = paciente.Nome,
+                Idade = paciente.Idade,
+                Sexo = paciente.Sexo,
+                Peso = paciente.Peso,
+                DataCadastro = paciente.DataCadastro,
+                ProprietarioId = paciente.ProprietarioId,
+                EspecieId = paciente.EspecieId,
+                RacaId = paciente.RacaId,
+                Proprietario = paciente.Proprietario == null ? null : new ProprietarioViewModel
+                {
+                    Id = paciente.Proprietario.Id,
+                    Nome = paciente.Proprietario.Nome
+                },
+                Especie = paciente.Especie == null ? null : new EspecieViewModel
+                {
+                    Id = paciente.Especie.Id,
+                    Nome = paciente.Especie.Nome
+                },
+                Raca = paciente.Raca == null ? null : new RacaViewModel
+                {
+                    Id = paciente.Raca.Id,
+                    Nome = paciente.Raca.Nome
+                }
+            };
+
+            return View(pacienteViewModel);
         }
 
         [HttpPost, ActionName("Delete")]

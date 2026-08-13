@@ -26,8 +26,15 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca));
             }
 
+            var exames = await query.ToListAsync();
+            var examesViewModel = exames.Select(e => new ExameViewModel
+            {
+                Id = e.Id,
+                Nome = e.Nome
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(examesViewModel);
         }
 
         // GET: Exames/Details/5
@@ -45,7 +52,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(exame);
+            var exameViewModel = new ExameViewModel
+            {
+                Id = exame.Id,
+                Nome = exame.Nome
+            };
+
+            return View(exameViewModel);
         }
 
         // GET: Exames/Create
@@ -148,7 +161,13 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(exame);
+            var exameViewModel = new ExameViewModel
+            {
+                Id = exame.Id,
+                Nome = exame.Nome
+            };
+
+            return View(exameViewModel);
         }
 
         // POST: Exames/Delete/5

@@ -1,0 +1,18 @@
+@model VetCrm.ViewModels.ServicoViewModel
+
+<h2>Novo Serviço</h2>
+
+<form asp-action="Create">
+    <div class="mb-3">
+        <label asp-for="Nome"></label>
+        <input asp-for="Nome" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Preco"></label>
+        <input asp-for="Preco" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

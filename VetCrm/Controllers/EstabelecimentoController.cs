@@ -28,8 +28,28 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca) || e.CNPJ.Contains(busca));
             }
 
+            var estabelecimentos = await query.ToListAsync();
+            var estabelecimentosViewModel = estabelecimentos.Select(e => new EstabelecimentoViewModel
+            {
+                Id = e.Id,
+                Nome = e.Nome,
+                CNPJ = e.CNPJ,
+                EnderecoId = e.EnderecoId,
+                Endereco = e.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = e.Endereco.Id,
+                    CEP = e.Endereco.CEP,
+                    Logradouro = e.Endereco.Logradouro,
+                    Numero = e.Endereco.Numero,
+                    Complemento = e.Endereco.Complemento,
+                    Bairro = e.Endereco.Bairro,
+                    Cidade = e.Endereco.Cidade,
+                    Estado = e.Endereco.Estado
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(estabelecimentosViewModel);
         }
 
         // GET: Estabelecimento/Details/5
@@ -43,7 +63,26 @@ namespace VetCrm.Controllers
 
             if (estabelecimento == null) return NotFound();
 
-            return View(estabelecimento);
+            var estabelecimentoViewModel = new EstabelecimentoViewModel
+            {
+                Id = estabelecimento.Id,
+                Nome = estabelecimento.Nome,
+                CNPJ = estabelecimento.CNPJ,
+                EnderecoId = estabelecimento.EnderecoId,
+                Endereco = estabelecimento.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = estabelecimento.Endereco.Id,
+                    CEP = estabelecimento.Endereco.CEP,
+                    Logradouro = estabelecimento.Endereco.Logradouro,
+                    Numero = estabelecimento.Endereco.Numero,
+                    Complemento = estabelecimento.Endereco.Complemento,
+                    Bairro = estabelecimento.Endereco.Bairro,
+                    Cidade = estabelecimento.Endereco.Cidade,
+                    Estado = estabelecimento.Endereco.Estado
+                }
+            };
+
+            return View(estabelecimentoViewModel);
         }
 
         // GET: Estabelecimento/Create
@@ -193,7 +232,26 @@ namespace VetCrm.Controllers
 
             if (estabelecimento == null) return NotFound();
 
-            return View(estabelecimento);
+            var estabelecimentoViewModel = new EstabelecimentoViewModel
+            {
+                Id = estabelecimento.Id,
+                Nome = estabelecimento.Nome,
+                CNPJ = estabelecimento.CNPJ,
+                EnderecoId = estabelecimento.EnderecoId,
+                Endereco = estabelecimento.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = estabelecimento.Endereco.Id,
+                    CEP = estabelecimento.Endereco.CEP,
+                    Logradouro = estabelecimento.Endereco.Logradouro,
+                    Numero = estabelecimento.Endereco.Numero,
+                    Complemento = estabelecimento.Endereco.Complemento,
+                    Bairro = estabelecimento.Endereco.Bairro,
+                    Cidade = estabelecimento.Endereco.Cidade,
+                    Estado = estabelecimento.Endereco.Estado
+                }
+            };
+
+            return View(estabelecimentoViewModel);
         }
 
         // POST: Estabelecimento/Delete/5

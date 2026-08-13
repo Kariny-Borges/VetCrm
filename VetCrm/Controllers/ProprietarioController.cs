@@ -31,8 +31,29 @@ namespace VetCrm.Controllers
                 query = query.Where(p => p.Nome.Contains(busca) || p.CPF.Contains(busca));
             }
 
+            var proprietarios = await query.ToListAsync();
+            var proprietariosViewModel = proprietarios.Select(p => new ProprietarioViewModel
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                CPF = p.CPF,
+                DataCadastro = p.DataCadastro,
+                EnderecoId = p.EnderecoId,
+                Endereco = p.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = p.Endereco.Id,
+                    CEP = p.Endereco.CEP,
+                    Logradouro = p.Endereco.Logradouro,
+                    Numero = p.Endereco.Numero,
+                    Complemento = p.Endereco.Complemento,
+                    Bairro = p.Endereco.Bairro,
+                    Cidade = p.Endereco.Cidade,
+                    Estado = p.Endereco.Estado
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(proprietariosViewModel);
         }
 
         // GET: Proprietario/Details/5
@@ -51,7 +72,27 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(proprietario);
+            var proprietarioViewModel = new ProprietarioViewModel
+            {
+                Id = proprietario.Id,
+                Nome = proprietario.Nome,
+                CPF = proprietario.CPF,
+                DataCadastro = proprietario.DataCadastro,
+                EnderecoId = proprietario.EnderecoId,
+                Endereco = proprietario.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = proprietario.Endereco.Id,
+                    CEP = proprietario.Endereco.CEP,
+                    Logradouro = proprietario.Endereco.Logradouro,
+                    Numero = proprietario.Endereco.Numero,
+                    Complemento = proprietario.Endereco.Complemento,
+                    Bairro = proprietario.Endereco.Bairro,
+                    Cidade = proprietario.Endereco.Cidade,
+                    Estado = proprietario.Endereco.Estado
+                }
+            };
+
+            return View(proprietarioViewModel);
         }
 
         // GET: Proprietario/Create
@@ -209,7 +250,27 @@ namespace VetCrm.Controllers
                 return NotFound();
             }
 
-            return View(proprietario);
+            var proprietarioViewModel = new ProprietarioViewModel
+            {
+                Id = proprietario.Id,
+                Nome = proprietario.Nome,
+                CPF = proprietario.CPF,
+                DataCadastro = proprietario.DataCadastro,
+                EnderecoId = proprietario.EnderecoId,
+                Endereco = proprietario.Endereco == null ? null : new EnderecoViewModel
+                {
+                    Id = proprietario.Endereco.Id,
+                    CEP = proprietario.Endereco.CEP,
+                    Logradouro = proprietario.Endereco.Logradouro,
+                    Numero = proprietario.Endereco.Numero,
+                    Complemento = proprietario.Endereco.Complemento,
+                    Bairro = proprietario.Endereco.Bairro,
+                    Cidade = proprietario.Endereco.Cidade,
+                    Estado = proprietario.Endereco.Estado
+                }
+            };
+
+            return View(proprietarioViewModel);
         }
 
         // POST: Proprietario/Delete/5

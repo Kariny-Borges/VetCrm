@@ -24,6 +24,9 @@ namespace VetCrm.Data
         public DbSet<Exame> Exames { get; set; }
         public DbSet<PacienteExame> PacienteExames { get; set; }
         public DbSet<Tratamento> Tratamentos { get; set; }
+        public DbSet<FormaPagamento> FormasPagamento { get; set; }
+        public DbSet<Servico> Servicos { get; set; }
+        public DbSet<Internacao> Internacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -112,6 +115,13 @@ namespace VetCrm.Data
                 .HasOne(t => t.Prontuario)
                 .WithMany()
                 .HasForeignKey(t => t.ProntuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Internacao → Paciente (qual animal está internado)
+            modelBuilder.Entity<Internacao>()
+                .HasOne(i => i.Paciente)
+                .WithMany()
+                .HasForeignKey(i => i.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // PacienteExame → Paciente (a lista de exames do paciente)

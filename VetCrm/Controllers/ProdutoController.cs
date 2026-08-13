@@ -25,8 +25,23 @@ namespace VetCrm.Controllers
                 query = query.Where(p => p.Nome.Contains(busca) || p.Categoria.Nome.Contains(busca));
             }
 
+            var produtos = await query.ToListAsync();
+            var produtosViewModel = produtos.Select(p => new ProdutoViewModel
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                CategoriaId = p.CategoriaId,
+                Quantidade = p.Quantidade,
+                Preco = p.Preco,
+                Categoria = p.Categoria == null ? null : new CategoriaViewModel
+                {
+                    Id = p.Categoria.Id,
+                    Nome = p.Categoria.Nome
+                }
+            }).ToList();
+
             ViewData["BuscaAtual"] = busca;
-            return View(await query.ToListAsync());
+            return View(produtosViewModel);
         }
 
         public IActionResult Create()
@@ -100,7 +115,22 @@ namespace VetCrm.Controllers
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (produto == null) return NotFound();
-            return View(produto);
+
+            var produtoViewModel = new ProdutoViewModel
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                CategoriaId = produto.CategoriaId,
+                Quantidade = produto.Quantidade,
+                Preco = produto.Preco,
+                Categoria = produto.Categoria == null ? null : new CategoriaViewModel
+                {
+                    Id = produto.Categoria.Id,
+                    Nome = produto.Categoria.Nome
+                }
+            };
+
+            return View(produtoViewModel);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -109,7 +139,22 @@ namespace VetCrm.Controllers
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (produto == null) return NotFound();
-            return View(produto);
+
+            var produtoViewModel = new ProdutoViewModel
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                CategoriaId = produto.CategoriaId,
+                Quantidade = produto.Quantidade,
+                Preco = produto.Preco,
+                Categoria = produto.Categoria == null ? null : new CategoriaViewModel
+                {
+                    Id = produto.Categoria.Id,
+                    Nome = produto.Categoria.Nome
+                }
+            };
+
+            return View(produtoViewModel);
         }
 
         [HttpPost, ActionName("Delete")]

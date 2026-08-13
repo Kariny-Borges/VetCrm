@@ -9,7 +9,12 @@
         public DateTime DataCadastro { get; set; }
 
         public int ProprietarioId { get; set; }
+        public ProprietarioViewModel? Proprietario { get; set; }
+
         public int EspecieId { get; set; }
+        public EspecieViewModel? Especie { get; set; }
+
         public int RacaId { get; set; }
+        public RacaViewModel? Raca { get; set; }
     }
 }

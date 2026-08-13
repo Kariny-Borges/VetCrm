@@ -12,5 +12,7 @@ namespace VetCrm.ViewModels
 
         public int? EnderecoId { get; set; }
         public EnderecoViewModel? Endereco { get; set; }
+
+        public List<UsuarioEstabelecimentoViewModel> UsuarioEstabelecimentos { get; set; } = new List<UsuarioEstabelecimentoViewModel>();
     }
 }
