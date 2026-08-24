@@ -112,7 +112,7 @@ namespace VetCrm.Controllers
                 {
                     Nome = model.Nome,
                     CPF = model.CPF,
-                    DataCadastro = model.DataCadastro
+                    DataCadastro = DateTime.Now
                 };
 
                 if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
@@ -140,19 +140,16 @@ namespace VetCrm.Controllers
         }
 
         // GET: Proprietario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var proprietario = await _context.Proprietarios.Include(p => p.Endereco).FirstOrDefaultAsync(p => p.Id == id);
             if (proprietario == null) return NotFound();
 
-            var model = new ProprietarioViewModel
+            var proprietarioViewModel = new ProprietarioViewModel
             {
                 Id = proprietario.Id,
                 Nome = proprietario.Nome,
                 CPF = proprietario.CPF,
-                DataCadastro = proprietario.DataCadastro,
                 EnderecoId = proprietario.EnderecoId,
                 Endereco = proprietario.Endereco == null ? null : new EnderecoViewModel
                 {
@@ -167,71 +164,62 @@ namespace VetCrm.Controllers
                 }
             };
 
-            return View(model);
+            return View(proprietarioViewModel);
         }
 
         // POST: Proprietario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProprietarioViewModel model, EnderecoViewModel endereco)
+        public async Task<IActionResult> Edit(int id, ProprietarioViewModel proprietarioViewModel, EnderecoViewModel endereco)
         {
-            if (id != model.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
-                try
+                var proprietario = await _context.Proprietarios.FindAsync(id);
+                if (proprietario == null) return NotFound();
+
+                proprietario.Nome = proprietarioViewModel.Nome;
+                proprietario.CPF = proprietarioViewModel.CPF;
+
+                if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                 {
-                    var proprietario = await _context.Proprietarios.FindAsync(id);
-                    if (proprietario == null) return NotFound();
-
-                    proprietario.Nome = model.Nome;
-                    proprietario.CPF = model.CPF;
-                    proprietario.DataCadastro = model.DataCadastro;
-
-                    if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                    if (proprietario.EnderecoId.HasValue && proprietario.EnderecoId.Value > 0)
                     {
-                        if (proprietario.EnderecoId.HasValue && proprietario.EnderecoId.Value > 0)
+                        var enderecoExistente = await _context.Enderecos.FindAsync(proprietario.EnderecoId.Value);
+                        if (enderecoExistente != null)
                         {
-                            var enderecoExistente = await _context.Enderecos.FindAsync(proprietario.EnderecoId.Value);
-                            if (enderecoExistente != null)
-                            {
-                                enderecoExistente.CEP = endereco.CEP;
-                                enderecoExistente.Logradouro = endereco.Logradouro;
-                                enderecoExistente.Numero = endereco.Numero;
-                                enderecoExistente.Complemento = endereco.Complemento;
-                                enderecoExistente.Bairro = endereco.Bairro;
-                                enderecoExistente.Cidade = endereco.Cidade;
-                                enderecoExistente.Estado = endereco.Estado;
-                            }
-                        }
-                        else
-                        {
-                            var novoEndereco = new Endereco
-                            {
-                                CEP = endereco.CEP,
-                                Logradouro = endereco.Logradouro,
-                                Numero = endereco.Numero,
-                                Complemento = endereco.Complemento,
-                                Bairro = endereco.Bairro,
-                                Cidade = endereco.Cidade,
-                                Estado = endereco.Estado
-                            };
-                            _context.Enderecos.Add(novoEndereco);
-                            await _context.SaveChangesAsync();
-                            proprietario.EnderecoId = novoEndereco.Id;
+                            enderecoExistente.CEP = endereco.CEP;
+                            enderecoExistente.Logradouro = endereco.Logradouro;
+                            enderecoExistente.Numero = endereco.Numero;
+                            enderecoExistente.Complemento = endereco.Complemento;
+                            enderecoExistente.Bairro = endereco.Bairro;
+                            enderecoExistente.Cidade = endereco.Cidade;
+                            enderecoExistente.Estado = endereco.Estado;
+                            _context.Enderecos.Update(enderecoExistente);
                         }
                     }
+                    else
+                    {
+                        var novoEndereco = new Endereco
+                        {
+                            CEP = endereco.CEP,
+                            Logradouro = endereco.Logradouro,
+                            Numero = endereco.Numero,
+                            Complemento = endereco.Complemento,
+                            Bairro = endereco.Bairro,
+                            Cidade = endereco.Cidade,
+                            Estado = endereco.Estado
+                        };
+                        _context.Enderecos.Add(novoEndereco);
+                        await _context.SaveChangesAsync();
+                        proprietario.EnderecoId = novoEndereco.Id;
+                    }
+                }
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProprietarioExists(model.Id)) return NotFound();
-                    else throw;
-                }
+                _context.Proprietarios.Update(proprietario);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(proprietarioViewModel);
         }
 
         // GET: Proprietario/Delete/5

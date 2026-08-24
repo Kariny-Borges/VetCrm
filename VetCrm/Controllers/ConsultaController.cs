@@ -147,20 +147,12 @@ namespace VetCrm.Controllers
         }
 
         // GET: Consulta/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var consulta = await _context.Consultas.FindAsync(id);
-            if (consulta == null)
-            {
-                return NotFound();
-            }
+            if (consulta == null) return NotFound();
 
-            var model = new ConsultaViewModel
+            var consultaViewModel = new ConsultaViewModel
             {
                 Id = consulta.Id,
                 DataConsulta = consulta.DataConsulta,
@@ -170,57 +162,35 @@ namespace VetCrm.Controllers
                 VeterinarioId = consulta.VeterinarioId
             };
 
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", model.VeterinarioId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", model.TipoConsultaId);
-            return View(model);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consultaViewModel.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consultaViewModel.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consultaViewModel.TipoConsultaId);
+            return View(consultaViewModel);
         }
 
         // POST: Consulta/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ConsultaViewModel model)
+        public async Task<IActionResult> Edit(int id, ConsultaViewModel consultaViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var consulta = await _context.Consultas.FindAsync(id);
-                    if (consulta == null)
-                    {
-                        return NotFound();
-                    }
+                var consulta = await _context.Consultas.FindAsync(id);
+                if (consulta == null) return NotFound();
 
-                    consulta.DataConsulta = model.DataConsulta;
-                    consulta.Observacoes = model.Observacoes;
-                    consulta.TipoConsultaId = model.TipoConsultaId;
-                    consulta.PacienteId = model.PacienteId;
-                    consulta.VeterinarioId = model.VeterinarioId;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ConsultaExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                consulta.DataConsulta = consultaViewModel.DataConsulta;
+                consulta.Observacoes = consultaViewModel.Observacoes;
+                consulta.TipoConsultaId = consultaViewModel.TipoConsultaId;
+                consulta.PacienteId = consultaViewModel.PacienteId;
+                consulta.VeterinarioId = consultaViewModel.VeterinarioId;
+                _context.Consultas.Update(consulta);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
-            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", model.VeterinarioId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", model.TipoConsultaId);
-            return View(model);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", consultaViewModel.PacienteId);
+            ViewData["VeterinarioId"] = new SelectList(_context.Veterinarios, "Id", "Nome", consultaViewModel.VeterinarioId);
+            ViewData["TipoConsultaId"] = new SelectList(_context.TiposConsulta, "Id", "Nome", consultaViewModel.TipoConsultaId);
+            return View(consultaViewModel);
         }
 
         // POST: Consulta/MudarSituacao

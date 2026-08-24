@@ -154,10 +154,73 @@ namespace VetCrm.Controllers
                 .Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Nome })
                 .ToListAsync();
 
-            // 4) Retorna p/ tela
+            // 4) Model → ViewModel: a entidade do banco não sai da controller.
+            var consultaViewModel = new ConsultaViewModel
+            {
+                Id = consulta.Id,
+                DataConsulta = consulta.DataConsulta,
+                Situacao = consulta.Situacao,
+                Observacoes = consulta.Observacoes,
+                PacienteId = consulta.PacienteId,
+                Paciente = consulta.Paciente == null ? null : new PacienteViewModel
+                {
+                    Id = consulta.Paciente.Id,
+                    Nome = consulta.Paciente.Nome
+                }
+            };
+
+            var historicoConsultasViewModel = historicoConsultas.Select(c => new ConsultaViewModel
+            {
+                Id = c.Id,
+                DataConsulta = c.DataConsulta,
+                Situacao = c.Situacao,
+                Observacoes = c.Observacoes,
+                TipoConsultaId = c.TipoConsultaId,
+                TipoConsulta = c.TipoConsulta == null ? null : new TipoConsultaViewModel
+                {
+                    Id = c.TipoConsulta.Id,
+                    Nome = c.TipoConsulta.Nome
+                }
+            }).ToList();
+
+            var historicoVacinasViewModel = historicoVacinas.Select(pv => new PacienteVacinaViewModel
+            {
+                Id = pv.Id,
+                PacienteId = pv.PacienteId,
+                VacinaId = pv.VacinaId,
+                DataAplicacao = pv.DataAplicacao,
+                DataProximaDose = pv.DataProximaDose,
+                Vacina = pv.Vacina == null ? null : new VacinaViewModel
+                {
+                    Id = pv.Vacina.Id,
+                    Nome = pv.Vacina.Nome
+                }
+            }).ToList();
+
+            var historicoTratamentosViewModel = historicoTratamentos.Select(t => new TratamentoViewModel
+            {
+                Id = t.Id,
+                Descricao = t.Descricao,
+                DataInicio = t.DataInicio,
+                DataFim = t.DataFim
+            }).ToList();
+
+            var historicoExamesViewModel = historicoExames.Select(pe => new PacienteExameViewModel
+            {
+                Id = pe.Id,
+                ExameId = pe.ExameId,
+                Resultado = pe.Resultado,
+                Exame = pe.Exame == null ? null : new ExameViewModel
+                {
+                    Id = pe.Exame.Id,
+                    Nome = pe.Exame.Nome
+                }
+            }).ToList();
+
+            // 5) Retorna p/ tela
             var viewModel = new AtendimentoViewModel
             {
-                Consulta = consulta,
+                Consulta = consultaViewModel,
                 Prontuario = new AtenderProntuarioViewModel
                 {
                     Id = prontuario.Id,
@@ -165,10 +228,10 @@ namespace VetCrm.Controllers
                     Descricao = prontuario.Descricao,
                     Diagnostico = prontuario.Diagnostico
                 },
-                HistoricoConsultas = historicoConsultas,
-                HistoricoVacinas = historicoVacinas,
-                HistoricoTratamentos = historicoTratamentos,
-                HistoricoExames = historicoExames,
+                HistoricoConsultas = historicoConsultasViewModel,
+                HistoricoVacinas = historicoVacinasViewModel,
+                HistoricoTratamentos = historicoTratamentosViewModel,
+                HistoricoExames = historicoExamesViewModel,
                 ExamesDisponiveis = examesDisponiveis,
                 VacinasDisponiveis = vacinasDisponiveis,
                 SomenteLeitura = consulta.Situacao == SituacaoConsulta.Realizada
@@ -335,6 +398,7 @@ namespace VetCrm.Controllers
                 tratamento.DataInicio = model.DataInicio;
                 tratamento.DataFim = model.DataFim;
 
+                _context.Tratamentos.Update(tratamento);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Atender), new { id = consultaId });
             }
@@ -384,6 +448,7 @@ namespace VetCrm.Controllers
                 pacienteExame.ExameId = model.ExameId;
                 pacienteExame.Resultado = model.Resultado;
 
+                _context.PacienteExames.Update(pacienteExame);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Atender), new { id = consultaId });
             }
@@ -438,6 +503,7 @@ namespace VetCrm.Controllers
                 pacienteVacina.DataAplicacao = model.DataAplicacao;
                 pacienteVacina.DataProximaDose = model.DataProximaDose;
 
+                _context.PacienteVacinas.Update(pacienteVacina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Atender), new { id = consultaId });
             }
@@ -486,19 +552,12 @@ namespace VetCrm.Controllers
         }
 
         // GET: Prontuario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var prontuario = await _context.Prontuarios.FindAsync(id);
-            if (prontuario == null)
-            {
-                return NotFound();
-            }
-            var model = new ProntuarioViewModel
+            if (prontuario == null) return NotFound();
+
+            var prontuarioViewModel = new ProntuarioViewModel
             {
                 Id = prontuario.Id,
                 Descricao = prontuario.Descricao,
@@ -509,9 +568,9 @@ namespace VetCrm.Controllers
                 ConsultaId = prontuario.ConsultaId
             };
 
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", model.ConsultaId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
-            return View(model);
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", prontuarioViewModel.ConsultaId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", prontuarioViewModel.PacienteId);
+            return View(prontuarioViewModel);
         }
 
         // POST: Prontuario/Edit/5
@@ -519,48 +578,26 @@ namespace VetCrm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProntuarioViewModel model)
+        public async Task<IActionResult> Edit(int id, ProntuarioViewModel prontuarioViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var prontuario = await _context.Prontuarios.FindAsync(id);
-                    if (prontuario == null)
-                    {
-                        return NotFound();
-                    }
+                var prontuario = await _context.Prontuarios.FindAsync(id);
+                if (prontuario == null) return NotFound();
 
-                    prontuario.Descricao = model.Descricao;
-                    prontuario.Diagnostico = model.Diagnostico;
-                    prontuario.Tratamento = model.Tratamento;
-                    prontuario.DataRegistro = model.DataRegistro;
-                    prontuario.PacienteId = model.PacienteId;
-                    prontuario.ConsultaId = model.ConsultaId;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProntuarioExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                prontuario.Descricao = prontuarioViewModel.Descricao;
+                prontuario.Diagnostico = prontuarioViewModel.Diagnostico;
+                prontuario.Tratamento = prontuarioViewModel.Tratamento;
+                prontuario.DataRegistro = prontuarioViewModel.DataRegistro;
+                prontuario.PacienteId = prontuarioViewModel.PacienteId;
+                prontuario.ConsultaId = prontuarioViewModel.ConsultaId;
+                _context.Prontuarios.Update(prontuario);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", model.ConsultaId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", model.PacienteId);
-            return View(model);
+            ViewData["ConsultaId"] = new SelectList(_context.Consultas.Include(c => c.Paciente), "Id", "Resumo", prontuarioViewModel.ConsultaId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Nome", prontuarioViewModel.PacienteId);
+            return View(prontuarioViewModel);
         }
 
         // GET: Prontuario/Delete/5

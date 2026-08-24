@@ -85,67 +85,38 @@ namespace VetCrm.Controllers
         }
 
         // GET: Contato/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var contato = await _context.Contato.FindAsync(id);
-            if (contato == null)
-            {
-                return NotFound();
-            }
+            if (contato == null) return NotFound();
 
-            var model = new ContatoViewModel
+            var contatoViewModel = new ContatoViewModel
             {
                 Id = contato.Id,
                 Tipo = contato.Tipo,
                 Valor = contato.Valor
             };
-            return View(model);
+
+            return View(contatoViewModel);
         }
 
         // POST: Contato/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ContatoViewModel model)
+        public async Task<IActionResult> Edit(int id, ContatoViewModel contatoViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var contato = await _context.Contato.FindAsync(id);
-                    if (contato == null)
-                    {
-                        return NotFound();
-                    }
+                var contato = await _context.Contato.FindAsync(id);
+                if (contato == null) return NotFound();
 
-                    contato.Tipo = model.Tipo;
-                    contato.Valor = model.Valor;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ContatoExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                contato.Tipo = contatoViewModel.Tipo;
+                contato.Valor = contatoViewModel.Valor;
+                _context.Contato.Update(contato);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(contatoViewModel);
         }
 
         // GET: Contato/Delete/5

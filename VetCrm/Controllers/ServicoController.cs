@@ -40,53 +40,54 @@ namespace VetCrm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ServicoViewModel model)
         {
-            var servico = new Servico
+            if (ModelState.IsValid)
             {
-                Nome = model.Nome,
-                Preco = model.Preco
-            };
+                var servico = new Servico
+                {
+                    Nome = model.Nome,
+                    Preco = model.Preco
+                };
 
-            _context.Servicos.Add(servico);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+                _context.Servicos.Add(servico);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
         }
 
         // Mostra o formulário já preenchido
         public async Task<IActionResult> Edit(int id)
         {
             var servico = await _context.Servicos.FindAsync(id);
-            if (servico == null)
-            {
-                return NotFound();
-            }
+            if (servico == null) return NotFound();
 
-            var model = new ServicoViewModel
+            var servicoViewModel = new ServicoViewModel
             {
                 Id = servico.Id,
                 Nome = servico.Nome,
                 Preco = servico.Preco
             };
 
-            return View(model);
+            return View(servicoViewModel);
         }
 
         // Recebe o formulário e atualiza
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ServicoViewModel model)
+        public async Task<IActionResult> Edit(int id, ServicoViewModel servicoViewModel)
         {
-            var servico = await _context.Servicos.FindAsync(model.Id);
-            if (servico == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var servico = await _context.Servicos.FindAsync(id);
+                if (servico == null) return NotFound();
+
+                servico.Nome = servicoViewModel.Nome;
+                servico.Preco = servicoViewModel.Preco;
+                _context.Servicos.Update(servico);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-
-            servico.Nome = model.Nome;
-            servico.Preco = model.Preco;
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            return View(servicoViewModel);
         }
 
         // Mostra a tela de confirmação

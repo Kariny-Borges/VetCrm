@@ -129,7 +129,7 @@ namespace VetCrm.Controllers
                     Idade = model.Idade,
                     Sexo = model.Sexo,
                     Peso = model.Peso,
-                    DataCadastro = model.DataCadastro,
+                    DataCadastro = DateTime.Now,
                     ProprietarioId = model.ProprietarioId,
                     EspecieId = model.EspecieId,
                     RacaId = model.RacaId
@@ -144,67 +144,53 @@ namespace VetCrm.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var paciente = await _context.Pacientes.FindAsync(id);
             if (paciente == null) return NotFound();
 
-            var model = new PacienteViewModel
+            var pacienteViewModel = new PacienteViewModel
             {
                 Id = paciente.Id,
                 Nome = paciente.Nome,
                 Idade = paciente.Idade,
                 Sexo = paciente.Sexo,
                 Peso = paciente.Peso,
-                DataCadastro = paciente.DataCadastro,
                 ProprietarioId = paciente.ProprietarioId,
                 EspecieId = paciente.EspecieId,
                 RacaId = paciente.RacaId
             };
 
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", model.EspecieId);
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", model.ProprietarioId);
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", model.RacaId);
-            return View(model);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", pacienteViewModel.EspecieId);
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", pacienteViewModel.ProprietarioId);
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", pacienteViewModel.RacaId);
+            return View(pacienteViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PacienteViewModel model)
+        public async Task<IActionResult> Edit(int id, PacienteViewModel pacienteViewModel)
         {
-            if (id != model.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var paciente = await _context.Pacientes.FindAsync(id);
-                    if (paciente == null) return NotFound();
+                var paciente = await _context.Pacientes.FindAsync(id);
+                if (paciente == null) return NotFound();
 
-                    paciente.Nome = model.Nome;
-                    paciente.Idade = model.Idade;
-                    paciente.Sexo = model.Sexo;
-                    paciente.Peso = model.Peso;
-                    paciente.DataCadastro = model.DataCadastro;
-                    paciente.ProprietarioId = model.ProprietarioId;
-                    paciente.EspecieId = model.EspecieId;
-                    paciente.RacaId = model.RacaId;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PacienteExists(model.Id)) return NotFound();
-                    else throw;
-                }
+                paciente.Nome = pacienteViewModel.Nome;
+                paciente.Idade = pacienteViewModel.Idade;
+                paciente.Sexo = pacienteViewModel.Sexo;
+                paciente.Peso = pacienteViewModel.Peso;
+                paciente.ProprietarioId = pacienteViewModel.ProprietarioId;
+                paciente.EspecieId = pacienteViewModel.EspecieId;
+                paciente.RacaId = pacienteViewModel.RacaId;
+                _context.Pacientes.Update(paciente);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", model.EspecieId);
-            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", model.ProprietarioId);
-            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", model.RacaId);
-            return View(model);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", pacienteViewModel.EspecieId);
+            ViewData["ProprietarioId"] = new SelectList(_context.Proprietarios, "Id", "Nome", pacienteViewModel.ProprietarioId);
+            ViewData["RacaId"] = new SelectList(_context.Racas, "Id", "Nome", pacienteViewModel.RacaId);
+            return View(pacienteViewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)

@@ -70,7 +70,7 @@ namespace VetCrm.Controllers
             var vacina = await _context.Vacinas.FindAsync(id);
             if (vacina == null) return NotFound();
 
-            var model = new VacinaViewModel
+            var vacinaViewModel = new VacinaViewModel
             {
                 Id = vacina.Id,
                 Nome = vacina.Nome,
@@ -80,27 +80,27 @@ namespace VetCrm.Controllers
                 Fabricante = vacina.Fabricante
             };
 
-            return View(model);
+            return View(vacinaViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, VacinaViewModel model)
+        public async Task<IActionResult> Edit(int id, VacinaViewModel vacinaViewModel)
         {
             if (ModelState.IsValid)
             {
-                var vacina = await _context.Vacinas.FindAsync(model.Id);
+                var vacina = await _context.Vacinas.FindAsync(id);
                 if (vacina == null) return NotFound();
 
-                vacina.Nome = model.Nome;
-                vacina.Descricao = model.Descricao;
-                vacina.Lote = model.Lote;
-                vacina.Validade = model.Validade;
-                vacina.Fabricante = model.Fabricante;
-
+                vacina.Nome = vacinaViewModel.Nome;
+                vacina.Descricao = vacinaViewModel.Descricao;
+                vacina.Lote = vacinaViewModel.Lote;
+                vacina.Validade = vacinaViewModel.Validade;
+                vacina.Fabricante = vacinaViewModel.Fabricante;
+                _context.Vacinas.Update(vacina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(vacinaViewModel);
         }
 
         public async Task<IActionResult> Delete(int id)

@@ -45,12 +45,6 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="DataCadastro">Data de Cadastro</label>
-                <input asp-for="DataCadastro" class="form-control" type="date" />
-                <span asp-validation-for="DataCadastro" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
                 <label asp-for="ProprietarioId">Proprietário</label>
                 <select asp-for="ProprietarioId" class="form-select" asp-items="ViewBag.ProprietarioId">
                     <option value="">Selecione o proprietário...</option>

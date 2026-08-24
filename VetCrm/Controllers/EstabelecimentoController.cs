@@ -129,14 +129,12 @@ namespace VetCrm.Controllers
         }
 
         // GET: Estabelecimento/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var estabelecimento = await _context.Estabelecimentos.Include(e => e.Endereco).FirstOrDefaultAsync(e => e.Id == id);
             if (estabelecimento == null) return NotFound();
 
-            var model = new EstabelecimentoViewModel
+            var estabelecimentoViewModel = new EstabelecimentoViewModel
             {
                 Id = estabelecimento.Id,
                 Nome = estabelecimento.Nome,
@@ -155,70 +153,62 @@ namespace VetCrm.Controllers
                 }
             };
 
-            return View(model);
+            return View(estabelecimentoViewModel);
         }
 
         // POST: Estabelecimento/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EstabelecimentoViewModel model, EnderecoViewModel endereco)
+        public async Task<IActionResult> Edit(int id, EstabelecimentoViewModel estabelecimentoViewModel, EnderecoViewModel endereco)
         {
-            if (id != model.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
-                try
+                var estabelecimento = await _context.Estabelecimentos.FindAsync(id);
+                if (estabelecimento == null) return NotFound();
+
+                estabelecimento.Nome = estabelecimentoViewModel.Nome;
+                estabelecimento.CNPJ = estabelecimentoViewModel.CNPJ;
+
+                if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                 {
-                    var estabelecimento = await _context.Estabelecimentos.FindAsync(id);
-                    if (estabelecimento == null) return NotFound();
-
-                    estabelecimento.Nome = model.Nome;
-                    estabelecimento.CNPJ = model.CNPJ;
-
-                    if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                    if (estabelecimento.EnderecoId.HasValue && estabelecimento.EnderecoId.Value > 0)
                     {
-                        if (estabelecimento.EnderecoId.HasValue && estabelecimento.EnderecoId.Value > 0)
+                        var enderecoExistente = await _context.Enderecos.FindAsync(estabelecimento.EnderecoId.Value);
+                        if (enderecoExistente != null)
                         {
-                            var enderecoExistente = await _context.Enderecos.FindAsync(estabelecimento.EnderecoId.Value);
-                            if (enderecoExistente != null)
-                            {
-                                enderecoExistente.CEP = endereco.CEP;
-                                enderecoExistente.Logradouro = endereco.Logradouro;
-                                enderecoExistente.Numero = endereco.Numero;
-                                enderecoExistente.Complemento = endereco.Complemento;
-                                enderecoExistente.Bairro = endereco.Bairro;
-                                enderecoExistente.Cidade = endereco.Cidade;
-                                enderecoExistente.Estado = endereco.Estado;
-                            }
-                        }
-                        else
-                        {
-                            var novoEndereco = new Endereco
-                            {
-                                CEP = endereco.CEP,
-                                Logradouro = endereco.Logradouro,
-                                Numero = endereco.Numero,
-                                Complemento = endereco.Complemento,
-                                Bairro = endereco.Bairro,
-                                Cidade = endereco.Cidade,
-                                Estado = endereco.Estado
-                            };
-                            _context.Enderecos.Add(novoEndereco);
-                            await _context.SaveChangesAsync();
-                            estabelecimento.EnderecoId = novoEndereco.Id;
+                            enderecoExistente.CEP = endereco.CEP;
+                            enderecoExistente.Logradouro = endereco.Logradouro;
+                            enderecoExistente.Numero = endereco.Numero;
+                            enderecoExistente.Complemento = endereco.Complemento;
+                            enderecoExistente.Bairro = endereco.Bairro;
+                            enderecoExistente.Cidade = endereco.Cidade;
+                            enderecoExistente.Estado = endereco.Estado;
+                            _context.Enderecos.Update(enderecoExistente);
                         }
                     }
+                    else
+                    {
+                        var novoEndereco = new Endereco
+                        {
+                            CEP = endereco.CEP,
+                            Logradouro = endereco.Logradouro,
+                            Numero = endereco.Numero,
+                            Complemento = endereco.Complemento,
+                            Bairro = endereco.Bairro,
+                            Cidade = endereco.Cidade,
+                            Estado = endereco.Estado
+                        };
+                        _context.Enderecos.Add(novoEndereco);
+                        await _context.SaveChangesAsync();
+                        estabelecimento.EnderecoId = novoEndereco.Id;
+                    }
+                }
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EstabelecimentoExists(model.Id)) return NotFound();
-                    else throw;
-                }
+                _context.Estabelecimentos.Update(estabelecimento);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(estabelecimentoViewModel);
         }
 
         // GET: Estabelecimento/Delete/5

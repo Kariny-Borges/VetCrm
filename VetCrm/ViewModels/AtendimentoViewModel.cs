@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using VetCrm.Models;
 
 namespace VetCrm.ViewModels
 {
@@ -9,8 +8,7 @@ namespace VetCrm.ViewModels
     public class AtendimentoViewModel
     {
         // A consulta que está sendo atendida (traz o paciente junto).
-        // Só exibição: continua sendo a entidade do EF.
-        public Consulta Consulta { get; set; }
+        public ConsultaViewModel Consulta { get; set; } = new ConsultaViewModel();
 
         // O prontuário desta consulta (o formulário de evolução que o vet preenche).
         public AtenderProntuarioViewModel Prontuario { get; set; } = new AtenderProntuarioViewModel();
@@ -18,16 +16,16 @@ namespace VetCrm.ViewModels
         // A caixinha "finalizar consulta".
         public bool FinalizarConsulta { get; set; }
 
-        // Histórico do paciente. Só exibição: continuam sendo entidades do EF.
-        public List<Consulta> HistoricoConsultas { get; set; } = new List<Consulta>();
-        public List<PacienteVacina> HistoricoVacinas { get; set; } = new List<PacienteVacina>();
-        public List<Tratamento> HistoricoTratamentos { get; set; } = new List<Tratamento>();
+        // Histórico do paciente. Só exibição.
+        public List<ConsultaViewModel> HistoricoConsultas { get; set; } = new List<ConsultaViewModel>();
+        public List<PacienteVacinaViewModel> HistoricoVacinas { get; set; } = new List<PacienteVacinaViewModel>();
+        public List<TratamentoViewModel> HistoricoTratamentos { get; set; } = new List<TratamentoViewModel>();
 
         // Formulário pra lançar um novo tratamento na lista (fica em branco até o vet preencher).
         public NovoTratamentoViewModel NovoTratamento { get; set; } = new NovoTratamentoViewModel();
 
         // Lista de exames do paciente (com o exame do catálogo já carregado).
-        public List<PacienteExame> HistoricoExames { get; set; } = new List<PacienteExame>();
+        public List<PacienteExameViewModel> HistoricoExames { get; set; } = new List<PacienteExameViewModel>();
 
         // Formulário pra pedir um novo exame (fica em branco até o vet escolher).
         public NovoExameViewModel NovoExame { get; set; } = new NovoExameViewModel();

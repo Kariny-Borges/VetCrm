@@ -180,10 +180,8 @@ namespace VetCrm.Controllers
         }
 
         // GET: Usuario/Edit/
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var usuario = await _context.Usuarios
                 .Include(u => u.Endereco)
                 .Include(u => u.UsuarioEstabelecimentos)
@@ -191,7 +189,7 @@ namespace VetCrm.Controllers
                 .FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null) return NotFound();
 
-            var model = new UsuarioViewModel
+            var usuarioViewModel = new UsuarioViewModel
             {
                 Id = usuario.Id,
                 Nome = usuario.Nome,
@@ -216,77 +214,69 @@ namespace VetCrm.Controllers
             };
 
             ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
-            return View(model);
+            return View(usuarioViewModel);
         }
 
         // POST: Usuario/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, UsuarioViewModel model, EnderecoViewModel endereco)
+        public async Task<IActionResult> Edit(int id, UsuarioViewModel usuarioViewModel, EnderecoViewModel endereco)
         {
-            if (id != model.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
-                try
+                var usuario = await _context.Usuarios.FindAsync(id);
+                if (usuario == null) return NotFound();
+
+                usuario.Nome = usuarioViewModel.Nome;
+                usuario.CPF = usuarioViewModel.CPF;
+                usuario.Telefone = usuarioViewModel.Telefone;
+                usuario.Email = usuarioViewModel.Email;
+                usuario.Login = usuarioViewModel.Login;
+                usuario.Senha = usuarioViewModel.Senha;
+                usuario.Perfil = usuarioViewModel.Perfil;
+
+                if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
                 {
-                    var usuario = await _context.Usuarios.FindAsync(id);
-                    if (usuario == null) return NotFound();
-
-                    usuario.Nome = model.Nome;
-                    usuario.CPF = model.CPF;
-                    usuario.Telefone = model.Telefone;
-                    usuario.Email = model.Email;
-                    usuario.Login = model.Login;
-                    usuario.Senha = model.Senha;
-                    usuario.Perfil = model.Perfil;
-
-                    if (!string.IsNullOrWhiteSpace(endereco.Logradouro))
+                    if (usuario.EnderecoId.HasValue && usuario.EnderecoId.Value > 0)
                     {
-                        if (usuario.EnderecoId.HasValue && usuario.EnderecoId.Value > 0)
+                        var enderecoExistente = await _context.Enderecos.FindAsync(usuario.EnderecoId.Value);
+                        if (enderecoExistente != null)
                         {
-                            var enderecoExistente = await _context.Enderecos.FindAsync(usuario.EnderecoId.Value);
-                            if (enderecoExistente != null)
-                            {
-                                enderecoExistente.CEP = endereco.CEP;
-                                enderecoExistente.Logradouro = endereco.Logradouro;
-                                enderecoExistente.Numero = endereco.Numero;
-                                enderecoExistente.Complemento = endereco.Complemento;
-                                enderecoExistente.Bairro = endereco.Bairro;
-                                enderecoExistente.Cidade = endereco.Cidade;
-                                enderecoExistente.Estado = endereco.Estado;
-                            }
-                        }
-                        else
-                        {
-                            var novoEndereco = new Endereco
-                            {
-                                CEP = endereco.CEP,
-                                Logradouro = endereco.Logradouro,
-                                Numero = endereco.Numero,
-                                Complemento = endereco.Complemento,
-                                Bairro = endereco.Bairro,
-                                Cidade = endereco.Cidade,
-                                Estado = endereco.Estado
-                            };
-                            _context.Enderecos.Add(novoEndereco);
-                            await _context.SaveChangesAsync();
-                            usuario.EnderecoId = novoEndereco.Id;
+                            enderecoExistente.CEP = endereco.CEP;
+                            enderecoExistente.Logradouro = endereco.Logradouro;
+                            enderecoExistente.Numero = endereco.Numero;
+                            enderecoExistente.Complemento = endereco.Complemento;
+                            enderecoExistente.Bairro = endereco.Bairro;
+                            enderecoExistente.Cidade = endereco.Cidade;
+                            enderecoExistente.Estado = endereco.Estado;
+                            _context.Enderecos.Update(enderecoExistente);
                         }
                     }
+                    else
+                    {
+                        var novoEndereco = new Endereco
+                        {
+                            CEP = endereco.CEP,
+                            Logradouro = endereco.Logradouro,
+                            Numero = endereco.Numero,
+                            Complemento = endereco.Complemento,
+                            Bairro = endereco.Bairro,
+                            Cidade = endereco.Cidade,
+                            Estado = endereco.Estado
+                        };
+                        _context.Enderecos.Add(novoEndereco);
+                        await _context.SaveChangesAsync();
+                        usuario.EnderecoId = novoEndereco.Id;
+                    }
+                }
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(model.Id)) return NotFound();
-                    else throw;
-                }
+                _context.Usuarios.Update(usuario);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.Estabelecimentos = await _context.Estabelecimentos.ToListAsync();
-            return View(model);
+            return View(usuarioViewModel);
         }
 
         // GET: Usuario/Delete/5

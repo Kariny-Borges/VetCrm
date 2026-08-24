@@ -72,6 +72,7 @@ namespace VetCrm.Controllers
                 if (formaPagamento == null) return NotFound();
 
                 formaPagamento.Nome = formaPagamentoViewModel.Nome;
+                _context.FormasPagamento.Update(formaPagamento);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

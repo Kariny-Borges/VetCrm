@@ -122,20 +122,12 @@ namespace VetCrm.Controllers
         }
 
         // GET: PacienteVacina/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var pacienteVacina = await _context.PacienteVacinas.FindAsync(id);
-            if (pacienteVacina == null)
-            {
-                return NotFound();
-            }
+            if (pacienteVacina == null) return NotFound();
 
-            var model = new PacienteVacinaViewModel
+            var pacienteVacinaViewModel = new PacienteVacinaViewModel
             {
                 Id = pacienteVacina.Id,
                 PacienteId = pacienteVacina.PacienteId,
@@ -144,54 +136,32 @@ namespace VetCrm.Controllers
                 DataProximaDose = pacienteVacina.DataProximaDose
             };
 
-            CarregarDropdowns(model.PacienteId, model.VacinaId);
-            return View(model);
+            CarregarDropdowns(pacienteVacinaViewModel.PacienteId, pacienteVacinaViewModel.VacinaId);
+            return View(pacienteVacinaViewModel);
         }
 
         // POST: PacienteVacina/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PacienteVacinaViewModel model)
+        public async Task<IActionResult> Edit(int id, PacienteVacinaViewModel pacienteVacinaViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var pacienteVacina = await _context.PacienteVacinas.FindAsync(id);
-                    if (pacienteVacina == null)
-                    {
-                        return NotFound();
-                    }
+                var pacienteVacina = await _context.PacienteVacinas.FindAsync(id);
+                if (pacienteVacina == null) return NotFound();
 
-                    // Só o que a tela edita. ProntuarioId continua com o valor do banco.
-                    pacienteVacina.PacienteId = model.PacienteId;
-                    pacienteVacina.VacinaId = model.VacinaId;
-                    pacienteVacina.DataAplicacao = model.DataAplicacao;
-                    pacienteVacina.DataProximaDose = model.DataProximaDose;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PacienteVacinaExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                // Só o que a tela edita. ProntuarioId continua com o valor do banco.
+                pacienteVacina.PacienteId = pacienteVacinaViewModel.PacienteId;
+                pacienteVacina.VacinaId = pacienteVacinaViewModel.VacinaId;
+                pacienteVacina.DataAplicacao = pacienteVacinaViewModel.DataAplicacao;
+                pacienteVacina.DataProximaDose = pacienteVacinaViewModel.DataProximaDose;
+                _context.PacienteVacinas.Update(pacienteVacina);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            CarregarDropdowns(model.PacienteId, model.VacinaId);
-            return View(model);
+            CarregarDropdowns(pacienteVacinaViewModel.PacienteId, pacienteVacinaViewModel.VacinaId);
+            return View(pacienteVacinaViewModel);
         }
 
         // GET: PacienteVacina/Delete/5

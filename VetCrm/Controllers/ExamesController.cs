@@ -86,64 +86,36 @@ namespace VetCrm.Controllers
         }
 
         // GET: Exames/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var exame = await _context.Exames.FindAsync(id);
-            if (exame == null)
-            {
-                return NotFound();
-            }
+            if (exame == null) return NotFound();
 
-            var model = new ExameViewModel
+            var exameViewModel = new ExameViewModel
             {
                 Id = exame.Id,
                 Nome = exame.Nome
             };
-            return View(model);
+
+            return View(exameViewModel);
         }
 
         // POST: Exames/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ExameViewModel model)
+        public async Task<IActionResult> Edit(int id, ExameViewModel exameViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var exame = await _context.Exames.FindAsync(id);
-                    if (exame == null)
-                    {
-                        return NotFound();
-                    }
+                var exame = await _context.Exames.FindAsync(id);
+                if (exame == null) return NotFound();
 
-                    exame.Nome = model.Nome;
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ExameExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                exame.Nome = exameViewModel.Nome;
+                _context.Exames.Update(exame);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(exameViewModel);
         }
 
         // GET: Exames/Delete/5

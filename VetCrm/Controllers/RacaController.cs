@@ -89,50 +89,39 @@ namespace VetCrm.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
             var raca = await _context.Racas.FindAsync(id);
             if (raca == null) return NotFound();
 
-            var model = new RacaViewModel
+            var racaViewModel = new RacaViewModel
             {
                 Id = raca.Id,
                 Nome = raca.Nome,
                 EspecieId = raca.EspecieId
             };
 
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", model.EspecieId);
-            return View(model);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", racaViewModel.EspecieId);
+            return View(racaViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, RacaViewModel model)
+        public async Task<IActionResult> Edit(int id, RacaViewModel racaViewModel)
         {
-            if (id != model.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var raca = await _context.Racas.FindAsync(id);
-                    if (raca == null) return NotFound();
+                var raca = await _context.Racas.FindAsync(id);
+                if (raca == null) return NotFound();
 
-                    raca.Nome = model.Nome;
-                    raca.EspecieId = model.EspecieId;
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RacaExists(model.Id)) return NotFound();
-                    else throw;
-                }
+                raca.Nome = racaViewModel.Nome;
+                raca.EspecieId = racaViewModel.EspecieId;
+                _context.Racas.Update(raca);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", model.EspecieId);
-            return View(model);
+            ViewData["EspecieId"] = new SelectList(_context.Especies, "Id", "Nome", racaViewModel.EspecieId);
+            return View(racaViewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)

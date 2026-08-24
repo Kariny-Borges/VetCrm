@@ -72,6 +72,7 @@ namespace VetCrm.Controllers
                 if (categoria == null) return NotFound();
 
                 categoria.Nome = categoriaViewModel.Nome;
+                _context.Categorias.Update(categoria);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

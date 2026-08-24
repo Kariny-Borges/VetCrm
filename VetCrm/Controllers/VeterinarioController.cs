@@ -117,20 +117,12 @@ namespace VetCrm.Controllers
         }
 
         // GET: Veterinario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var veterinario = await _context.Veterinarios.FindAsync(id);
-            if (veterinario == null)
-            {
-                return NotFound();
-            }
+            if (veterinario == null) return NotFound();
 
-            var model = new VeterinarioViewModel
+            var veterinarioViewModel = new VeterinarioViewModel
             {
                 Id = veterinario.Id,
                 Nome = veterinario.Nome,
@@ -138,51 +130,29 @@ namespace VetCrm.Controllers
                 EspecialidadeId = veterinario.EspecialidadeId
             };
 
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", model.EspecialidadeId);
-            return View(model);
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinarioViewModel.EspecialidadeId);
+            return View(veterinarioViewModel);
         }
 
         // POST: Veterinario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, VeterinarioViewModel model)
+        public async Task<IActionResult> Edit(int id, VeterinarioViewModel veterinarioViewModel)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var veterinario = await _context.Veterinarios.FindAsync(id);
-                    if (veterinario == null)
-                    {
-                        return NotFound();
-                    }
+                var veterinario = await _context.Veterinarios.FindAsync(id);
+                if (veterinario == null) return NotFound();
 
-                    veterinario.Nome = model.Nome;
-                    veterinario.CRMV = model.CRMV;
-                    veterinario.EspecialidadeId = model.EspecialidadeId;
-                    _context.Veterinarios.Update(veterinario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VeterinarioExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                veterinario.Nome = veterinarioViewModel.Nome;
+                veterinario.CRMV = veterinarioViewModel.CRMV;
+                veterinario.EspecialidadeId = veterinarioViewModel.EspecialidadeId;
+                _context.Veterinarios.Update(veterinario);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", model.EspecialidadeId);
-            return View(model);
+            ViewData["EspecialidadeId"] = new SelectList(_context.Especialidades, "Id", "Nome", veterinarioViewModel.EspecialidadeId);
+            return View(veterinarioViewModel);
         }
 
         // GET: Veterinario/Delete/5

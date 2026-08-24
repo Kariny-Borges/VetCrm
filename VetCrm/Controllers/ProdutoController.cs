@@ -76,7 +76,7 @@ namespace VetCrm.Controllers
             var produto = await _context.Produtos.FindAsync(id);
             if (produto == null) return NotFound();
 
-            var model = new ProdutoViewModel
+            var produtoViewModel = new ProdutoViewModel
             {
                 Id = produto.Id,
                 Nome = produto.Nome,
@@ -85,28 +85,28 @@ namespace VetCrm.Controllers
                 Preco = produto.Preco
             };
 
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", model.CategoriaId);
-            return View(model);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produtoViewModel.CategoriaId);
+            return View(produtoViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ProdutoViewModel model)
+        public async Task<IActionResult> Edit(int id, ProdutoViewModel produtoViewModel)
         {
             if (ModelState.IsValid)
             {
-                var produto = await _context.Produtos.FindAsync(model.Id);
+                var produto = await _context.Produtos.FindAsync(id);
                 if (produto == null) return NotFound();
 
-                produto.Nome = model.Nome;
-                produto.CategoriaId = model.CategoriaId;
-                produto.Quantidade = model.Quantidade;
-                produto.Preco = model.Preco;
-
+                produto.Nome = produtoViewModel.Nome;
+                produto.CategoriaId = produtoViewModel.CategoriaId;
+                produto.Quantidade = produtoViewModel.Quantidade;
+                produto.Preco = produtoViewModel.Preco;
+                _context.Produtos.Update(produto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", model.CategoriaId);
-            return View(model);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nome", produtoViewModel.CategoriaId);
+            return View(produtoViewModel);
         }
 
         public async Task<IActionResult> Details(int id)
