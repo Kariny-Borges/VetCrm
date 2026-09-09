@@ -163,7 +163,7 @@ else
                                 <td>@(t.DataFim.HasValue ? t.DataFim.Value.ToString("dd/MM/yyyy") : "Em andamento")</td>
                                 <td class="text-end">
                                     <a asp-action="EditarTratamento" asp-route-id="@t.Id" asp-route-consultaId="@Model.Consulta.Id"
-                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                       class="btn btn-sm btn-outline-primary" title="Editar">✏️</a>
                                 </td>
                             </tr>
                         }
@@ -215,7 +215,7 @@ else
                                 <td>@(string.IsNullOrWhiteSpace(e.Resultado) ? "Pendente" : e.Resultado)</td>
                                 <td class="text-end">
                                     <a asp-action="EditarExame" asp-route-id="@e.Id" asp-route-consultaId="@Model.Consulta.Id"
-                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                       class="btn btn-sm btn-outline-primary" title="Editar">✏️</a>
                                 </td>
                             </tr>
                         }
@@ -262,7 +262,7 @@ else
                                 <td>@v.DataProximaDose.ToString("dd/MM/yyyy")</td>
                                 <td class="text-end">
                                     <a asp-action="EditarVacina" asp-route-id="@v.Id" asp-route-consultaId="@Model.Consulta.Id"
-                                       class="btn btn-sm btn-outline-primary">Editar</a>
+                                       class="btn btn-sm btn-outline-primary" title="Editar">✏️</a>
                                 </td>
                             </tr>
                         }

@@ -20,7 +20,7 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string busca)
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var query = _context.Pacientes
                 .Include(p => p.Especie)
@@ -33,7 +33,14 @@ namespace VetCrm.Controllers
                 query = query.Where(p => p.Nome.Contains(busca) || p.Proprietario.Nome.Contains(busca));
             }
 
-            var pacientes = await query.ToListAsync();
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var pacientes = await query
+                .OrderBy(p => p.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var pacientesViewModel = pacientes.Select(p => new PacienteViewModel
             {
                 Id = p.Id,
@@ -63,7 +70,13 @@ namespace VetCrm.Controllers
             }).ToList();
 
             ViewData["BuscaAtual"] = busca;
-            return View(pacientesViewModel);
+            return View(new ListaPaginadaViewModel<PacienteViewModel>
+            {
+                Itens = pacientesViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina),
+                Busca = busca
+            });
         }
 
         public async Task<IActionResult> Details(int? id)

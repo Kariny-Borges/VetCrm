@@ -17,7 +17,7 @@ namespace VetCrm.Controllers
         }
 
         // GET: Exames
-        public async Task<IActionResult> Index(string busca)
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var query = _context.Exames.AsQueryable();
 
@@ -26,7 +26,14 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca));
             }
 
-            var exames = await query.ToListAsync();
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var exames = await query
+                .OrderBy(e => e.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var examesViewModel = exames.Select(e => new ExameViewModel
             {
                 Id = e.Id,
@@ -34,7 +41,13 @@ namespace VetCrm.Controllers
             }).ToList();
 
             ViewData["BuscaAtual"] = busca;
-            return View(examesViewModel);
+            return View(new ListaPaginadaViewModel<ExameViewModel>
+            {
+                Itens = examesViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina),
+                Busca = busca
+            });
         }
 
         // GET: Exames/Details/5

@@ -21,7 +21,7 @@ namespace VetCrm.Controllers
         }
 
         // GET: Consulta
-        public async Task<IActionResult> Index(string busca)
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var query = _context.Consultas
                 .Include(c => c.Paciente)
@@ -34,7 +34,14 @@ namespace VetCrm.Controllers
                 query = query.Where(c => c.Paciente.Nome.Contains(busca) || c.Veterinario.Nome.Contains(busca) || c.Observacoes.Contains(busca));
             }
 
-            var consultas = await query.ToListAsync();
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var consultas = await query
+                .OrderBy(c => c.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var consultasViewModel = consultas.Select(c => new ConsultaViewModel
             {
                 Id = c.Id,
@@ -62,7 +69,13 @@ namespace VetCrm.Controllers
             }).ToList();
 
             ViewData["BuscaAtual"] = busca;
-            return View(consultasViewModel);
+            return View(new ListaPaginadaViewModel<ConsultaViewModel>
+            {
+                Itens = consultasViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina),
+                Busca = busca
+            });
         }
 
         // GET: Consulta/Details/5

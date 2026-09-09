@@ -1,0 +1,23 @@
+@model VetCrm.ViewModels.PaginacaoViewModel
+
+@if (Model.TotalPaginas > 1)
+{
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.TemAnterior ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.PaginaAtual - 1)" asp-route-busca="@Model.Busca">Anterior</a>
+            </li>
+
+            @for (var i = 1; i <= Model.TotalPaginas; i++)
+            {
+                <li class="page-item @(i == Model.PaginaAtual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pagina="@i" asp-route-busca="@Model.Busca">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.TemProxima ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-pagina="@(Model.PaginaAtual + 1)" asp-route-busca="@Model.Busca">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+}

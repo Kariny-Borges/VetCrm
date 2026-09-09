@@ -1,4 +1,4 @@
-@model IEnumerable<VetCrm.ViewModels.ConsultaViewModel>
+@model VetCrm.ViewModels.ListaPaginadaViewModel<VetCrm.ViewModels.ConsultaViewModel>
 
 @{
     ViewData["Title"] = "Consultas";
@@ -32,7 +32,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Itens)
         {
             <tr>
                 <td>@item.DataConsulta.ToString("dd/MM/yyyy HH:mm")</td>
@@ -62,11 +62,13 @@
                     </form>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success" title="Editar">✏️</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Detalhes">👁️</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Excluir">🗑️</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<partial name="_Paginacao" model="Model" />

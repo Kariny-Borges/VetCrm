@@ -21,9 +21,18 @@ namespace VetCrm.Controllers
         }
 
         // GET: Contato
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pagina = 1)
         {
-            var contatos = await _context.Contato.ToListAsync();
+            var query = _context.Contato.AsQueryable();
+
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var contatos = await query
+                .OrderBy(c => c.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var contatosViewModel = contatos.Select(c => new ContatoViewModel
             {
                 Id = c.Id,
@@ -31,7 +40,12 @@ namespace VetCrm.Controllers
                 Valor = c.Valor
             }).ToList();
 
-            return View(contatosViewModel);
+            return View(new ListaPaginadaViewModel<ContatoViewModel>
+            {
+                Itens = contatosViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina)
+            });
         }
 
         // GET: Contato/Details/5

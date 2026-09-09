@@ -35,6 +35,12 @@ namespace VetCrm.Controllers
             return View();
         }
 
+        [AllowAnonymous] // Termos de uso também acessível sem login
+        public IActionResult Termos()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

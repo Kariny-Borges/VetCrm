@@ -15,16 +15,30 @@ namespace VetCrm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pagina = 1)
         {
-            var categorias = await _context.Categorias.ToListAsync();
+            var query = _context.Categorias.AsQueryable();
+
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var categorias = await query
+                .OrderBy(c => c.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var categoriasViewModel = categorias.Select(c => new CategoriaViewModel
             {
                 Id = c.Id,
                 Nome = c.Nome
             }).ToList();
 
-            return View(categoriasViewModel);
+            return View(new ListaPaginadaViewModel<CategoriaViewModel>
+            {
+                Itens = categoriasViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina)
+            });
         }
 
         public IActionResult Create()

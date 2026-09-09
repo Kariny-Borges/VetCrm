@@ -20,7 +20,7 @@ namespace VetCrm.Controllers
         }
 
         // GET: Veterinario
-        public async Task<IActionResult> Index(string busca)
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var query = _context.Veterinarios
                 .Include(v => v.Especialidade)
@@ -31,7 +31,14 @@ namespace VetCrm.Controllers
                 query = query.Where(v => v.Nome.Contains(busca) || v.CRMV.Contains(busca) || v.Especialidade.Nome.Contains(busca));
             }
 
-            var veterinarios = await query.ToListAsync();
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var veterinarios = await query
+                .OrderBy(v => v.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var veterinariosViewModel = veterinarios.Select(v => new VeterinarioViewModel
             {
                 Id = v.Id,
@@ -46,7 +53,13 @@ namespace VetCrm.Controllers
             }).ToList();
 
             ViewData["BuscaAtual"] = busca;
-            return View(veterinariosViewModel);
+            return View(new ListaPaginadaViewModel<VeterinarioViewModel>
+            {
+                Itens = veterinariosViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina),
+                Busca = busca
+            });
         }
 
         // GET: Veterinario/Details/5

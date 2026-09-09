@@ -1,0 +1,29 @@
+﻿@model IEnumerable<VetCrm.ViewModels.InternacaoViewModel>
+
+<h1> Internações </h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Motivo
+            </th>
+            <th>
+                Data Entrada
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var internacao in Model)
+            {
+                <tr>
+                    <td>@internacao.Motivo</td>
+                    <td>@internacao.DataEntrada</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

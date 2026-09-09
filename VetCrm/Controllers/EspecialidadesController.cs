@@ -21,7 +21,7 @@ namespace VetCrm.Controllers
         }
 
         // GET: Especialidades
-        public async Task<IActionResult> Index(string busca)
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var query = _context.Especialidades.AsQueryable();
 
@@ -30,7 +30,14 @@ namespace VetCrm.Controllers
                 query = query.Where(e => e.Nome.Contains(busca));
             }
 
-            var especialidades = await query.ToListAsync();
+            var itensPorPagina = 10;
+            var totalItens = await query.CountAsync();
+
+            var especialidades = await query
+                .OrderBy(e => e.Id)
+                .Skip((pagina - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
             var especialidadesViewModel = especialidades.Select(e => new EspecialidadeViewModel
             {
                 Id = e.Id,
@@ -38,7 +45,13 @@ namespace VetCrm.Controllers
             }).ToList();
 
             ViewData["BuscaAtual"] = busca;
-            return View(especialidadesViewModel);
+            return View(new ListaPaginadaViewModel<EspecialidadeViewModel>
+            {
+                Itens = especialidadesViewModel,
+                PaginaAtual = pagina,
+                TotalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina),
+                Busca = busca
+            });
         }
 
         // GET: Especialidades/Details/5
