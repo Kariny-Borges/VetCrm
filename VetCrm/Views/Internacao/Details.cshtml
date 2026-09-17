@@ -1,0 +1,10 @@
+@model VetCrm.ViewModels.InternacaoViewModel
+
+<h2>Detalhes da Internação</h2>
+
+<p>Paciente: @Model.Paciente?.Nome</p>
+<p>Motivo: @Model.Motivo</p>
+<p>Data Entrada: @Model.DataEntrada</p>
+<p>Data Saída: @Model.DataSaida</p>
+
+<a asp-action="Index">Voltar</a>

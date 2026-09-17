@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.RacaViewModel
 
 @{
-    ViewData["Title"] = "Detalhes da Raca";
+    ViewData["Title"] = "Detalhes da Raça";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Detalhes da Raca</h2>
+    <h2>Detalhes da Raça</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -14,7 +14,7 @@
         <dl class="row">
             <dt class="col-sm-4">Nome</dt>
             <dd class="col-sm-8">@Model.Nome</dd>
-            <dt class="col-sm-4">Especie</dt>
+            <dt class="col-sm-4">Espécie</dt>
             <dd class="col-sm-8">@Model.Especie?.Nome</dd>
         </dl>
 

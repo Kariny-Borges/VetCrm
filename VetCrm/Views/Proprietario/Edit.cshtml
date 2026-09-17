@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.ProprietarioViewModel
 
 @{
-    ViewData["Title"] = "Editar Proprietario";
+    ViewData["Title"] = "Editar Proprietário";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Editar Proprietario</h2>
+    <h2>Editar Proprietário</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -29,7 +29,7 @@
 
             <input type="hidden" asp-for="EnderecoId" />
             <hr />
-            <h5>Endereco</h5>
+            <h5>Endereço</h5>
 
             <div class="row">
                 <div class="col-md-4 form-group mb-3">
@@ -43,7 +43,7 @@
                     <input name="endereco.Logradouro" id="logradouro" class="form-control" value="@Model?.Endereco?.Logradouro" />
                 </div>
                 <div class="col-md-4 form-group mb-3">
-                    <label>Numero</label>
+                    <label>Número</label>
                     <input name="endereco.Numero" class="form-control" value="@Model?.Endereco?.Numero" />
                 </div>
             </div>

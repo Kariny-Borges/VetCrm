@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.ProntuarioViewModel
 
 @{
-    ViewData["Title"] = "Excluir Prontuario";
+    ViewData["Title"] = "Excluir Prontuário";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Excluir Prontuario</h2>
+    <h2>Excluir Prontuário</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -27,9 +27,9 @@
             <dd class="col-sm-8">@Model.DataRegistro.ToString("dd/MM/yyyy")</dd>
             <dt class="col-sm-4">Paciente</dt>
             <dd class="col-sm-8">@Model.Paciente?.Nome</dd>
-            <dt class="col-sm-4">Descricao</dt>
+            <dt class="col-sm-4">Descrição</dt>
             <dd class="col-sm-8">@Model.Descricao</dd>
-            <dt class="col-sm-4">Diagnostico</dt>
+            <dt class="col-sm-4">Diagnóstico</dt>
             <dd class="col-sm-8">@Model.Diagnostico</dd>
             <dt class="col-sm-4">Tratamento</dt>
             <dd class="col-sm-8">@Model.Tratamento</dd>

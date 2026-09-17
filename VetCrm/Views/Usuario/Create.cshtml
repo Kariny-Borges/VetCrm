@@ -1,10 +1,10 @@
 @model VetCrm.ViewModels.UsuarioViewModel
 
 @{
-    ViewData["Title"] = "Novo Usuario";
+    ViewData["Title"] = "Novo Usuário";
 }
 
-<h1>Novo Usuario</h1>
+<h1>Novo Usuário</h1>
 
 @if (ViewBag.ErrosDebug != null && !string.IsNullOrWhiteSpace((string)ViewBag.ErrosDebug))
 {
@@ -58,7 +58,7 @@
     </div>
 
     <hr />
-    <h4>Endereco</h4>
+    <h4>Endereço</h4>
 
     <div class="row">
         <div class="col-md-4 mb-3">
@@ -72,7 +72,7 @@
             <input name="endereco.Logradouro" id="logradouro" class="form-control" placeholder="Rua, Av, Travessa..." />
         </div>
         <div class="col-md-4 mb-3">
-            <label class="form-label">Numero</label>
+            <label class="form-label">Número</label>
             <input name="endereco.Numero" class="form-control" placeholder="123" />
         </div>
     </div>

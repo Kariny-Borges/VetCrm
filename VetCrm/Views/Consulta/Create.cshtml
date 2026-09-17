@@ -37,16 +37,16 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="VeterinarioId">Veterinario</label>
+                <label asp-for="VeterinarioId">Veterinário</label>
                 <select asp-for="VeterinarioId" class="form-select" asp-items="ViewBag.VeterinarioId">
-                    <option value="">Selecione o veterinario...</option>
+                    <option value="">Selecione o veterinário...</option>
                 </select>
                 <span asp-validation-for="VeterinarioId" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Observacoes">Observacoes</label>
-                <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="Observacoes da consulta"></textarea>
+                <label asp-for="Observacoes">Observações</label>
+                <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="Observações da consulta"></textarea>
                 <span asp-validation-for="Observacoes" class="text-danger"></span>
             </div>
 

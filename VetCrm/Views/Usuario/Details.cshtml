@@ -16,12 +16,12 @@
         <p><strong>Perfil:</strong> @Model.Perfil</p>
         @if (Model.Endereco != null)
         {
-            <p><strong>Endereco:</strong> @Model.Endereco.Logradouro, @Model.Endereco.Numero - @Model.Endereco.Bairro</p>
+            <p><strong>Endereço:</strong> @Model.Endereco.Logradouro, @Model.Endereco.Numero - @Model.Endereco.Bairro</p>
             <p><strong>Cidade:</strong> @Model.Endereco.Cidade / @Model.Endereco.Estado - CEP: @Model.Endereco.CEP</p>
         }
         else
         {
-            <p><strong>Endereco:</strong> <span class="text-muted">Nao informado</span></p>
+            <p><strong>Endereço:</strong> <span class="text-muted">Não informado</span></p>
         }
     </div>
 </div>

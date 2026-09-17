@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.RacaViewModel
 
 @{
-    ViewData["Title"] = "Editar Raca";
+    ViewData["Title"] = "Editar Raça";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Editar Raca</h2>
+    <h2>Editar Raça</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -22,9 +22,9 @@
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="EspecieId">Especie</label>
+                <label asp-for="EspecieId">Espécie</label>
                 <select asp-for="EspecieId" class="form-select" asp-items="ViewBag.EspecieId">
-                    <option value="">Selecione a especie...</option>
+                    <option value="">Selecione a espécie...</option>
                 </select>
                 <span asp-validation-for="EspecieId" class="text-danger"></span>
             </div>

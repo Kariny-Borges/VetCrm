@@ -1,10 +1,10 @@
 @model VetCrm.ViewModels.UsuarioViewModel
 
 @{
-    ViewData["Title"] = "Editar Usuario";
+    ViewData["Title"] = "Editar Usuário";
 }
 
-<h1>Editar Usuario</h1>
+<h1>Editar Usuário</h1>
 
 <form asp-action="Edit">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -52,7 +52,7 @@
 
     <input type="hidden" asp-for="EnderecoId" />
     <hr />
-    <h4>Endereco</h4>
+    <h4>Endereço</h4>
 
     <div class="row">
         <div class="col-md-4 mb-3">
@@ -66,7 +66,7 @@
             <input name="endereco.Logradouro" id="logradouro" class="form-control" value="@Model?.Endereco?.Logradouro" />
         </div>
         <div class="col-md-4 mb-3">
-            <label class="form-label">Numero</label>
+            <label class="form-label">Número</label>
             <input name="endereco.Numero" class="form-control" value="@Model?.Endereco?.Numero" />
         </div>
     </div>

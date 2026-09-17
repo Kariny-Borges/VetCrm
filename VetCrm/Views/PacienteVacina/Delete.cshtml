@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.PacienteVacinaViewModel
 
 @{
-    ViewData["Title"] = "Excluir Vacinacao";
+    ViewData["Title"] = "Excluir Vacinação";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Excluir Vacinacao</h2>
+    <h2>Excluir Vacinação</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -27,9 +27,9 @@
             <dd class="col-sm-8">@Model.Paciente?.Nome</dd>
             <dt class="col-sm-4">Vacina</dt>
             <dd class="col-sm-8">@Model.Vacina?.Nome</dd>
-            <dt class="col-sm-4">Data Aplicacao</dt>
+            <dt class="col-sm-4">Data Aplicação</dt>
             <dd class="col-sm-8">@Model.DataAplicacao.ToString("dd/MM/yyyy")</dd>
-            <dt class="col-sm-4">Proxima Dose</dt>
+            <dt class="col-sm-4">Próxima Dose</dt>
             <dd class="col-sm-8">@Model.DataProximaDose.ToString("dd/MM/yyyy")</dd>
         </dl>
 

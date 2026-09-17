@@ -1,11 +1,11 @@
 @model VetCrm.ViewModels.ProprietarioViewModel
 
 @{
-    ViewData["Title"] = "Excluir Proprietario";
+    ViewData["Title"] = "Excluir Proprietário";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Excluir Proprietario</h2>
+    <h2>Excluir Proprietário</h2>
     <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
 </div>
 
@@ -29,7 +29,7 @@
             <dd class="col-sm-8">@Model.CPF</dd>
             <dt class="col-sm-4">Data Cadastro</dt>
             <dd class="col-sm-8">@Model.DataCadastro.ToString("dd/MM/yyyy")</dd>
-            <dt class="col-sm-4">Endereco</dt>
+            <dt class="col-sm-4">Endereço</dt>
             <dd class="col-sm-8">@(Model.Endereco != null ? $"{Model.Endereco.Logradouro}, {Model.Endereco.Numero}" : "—")</dd>
         </dl>
 
