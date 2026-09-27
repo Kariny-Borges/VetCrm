@@ -1,0 +1,56 @@
+﻿@model VetCrm.ViewModels.InternacaoViewModel
+
+@{
+    ViewData["Title"] = "Editar Internação";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🏥 Editar Internação</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Voltar</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group mb-3">
+                <label asp-for="PacienteId">Paciente</label>
+                <select asp-for="PacienteId" class="form-select" asp-items="ViewBag.PacienteId">
+                    <option value="">Selecione o paciente...</option>
+                </select>
+                <span asp-validation-for="PacienteId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Motivo">Motivo</label>
+                <input asp-for="Motivo" class="form-control" />
+                <span asp-validation-for="Motivo" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DataEntrada">Data de Entrada</label>
+                    <input asp-for="DataEntrada" class="form-control" type="date" />
+                    <span asp-validation-for="DataEntrada" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DataSaida">Data de Saída</label>
+                    <input asp-for="DataSaida" class="form-control" type="date" />
+                    <span asp-validation-for="DataSaida" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

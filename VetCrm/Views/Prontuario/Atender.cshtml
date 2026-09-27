@@ -19,18 +19,18 @@
         Esta consulta já foi finalizada.
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Evolução</label>
-        <p class="form-control-plaintext border rounded p-2 bg-light">@Model.Prontuario.Descricao</p>
+    <div class="secao-texto">
+        <div class="secao-titulo">📝 Evolução</div>
+        <div class="secao-corpo">@Model.Prontuario.Descricao</div>
+    </div>
+
+    <div class="secao-texto">
+        <div class="secao-titulo">🔍 Diagnóstico</div>
+        <div class="secao-corpo">@Model.Prontuario.Diagnostico</div>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Diagnóstico</label>
-        <p class="form-control-plaintext border rounded p-2 bg-light">@Model.Prontuario.Diagnostico</p>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Tratamentos</label>
+        <label class="form-label">💊 Tratamentos</label>
         @if (Model.HistoricoTratamentos.Any())
         {
             <table class="table table-sm table-striped">
@@ -60,7 +60,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Exames</label>
+        <label class="form-label">🧪 Exames</label>
         @if (Model.HistoricoExames.Any())
         {
             <table class="table table-sm table-striped">
@@ -88,7 +88,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Vacinas</label>
+        <label class="form-label">💉 Vacinas</label>
         @if (Model.HistoricoVacinas.Any())
         {
             <table class="table table-sm table-striped">
@@ -130,18 +130,18 @@ else
         <input type="hidden" asp-for="Prontuario.ConsultaId" />
 
         <div class="mb-3">
-            <label asp-for="Prontuario.Descricao" class="form-label">Evolução</label>
+            <label asp-for="Prontuario.Descricao" class="form-label">📝 Evolução</label>
             <textarea asp-for="Prontuario.Descricao" class="form-control" rows="3"></textarea>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Prontuario.Diagnostico" class="form-label">Diagnóstico</label>
+            <label asp-for="Prontuario.Diagnostico" class="form-label">🔍 Diagnóstico</label>
             <textarea asp-for="Prontuario.Diagnostico" class="form-control" rows="2"></textarea>
         </div>
 
         <!-- ===== Lista de Tratamentos (histórico com início/fim) ===== -->
         <div class="mb-3">
-            <label class="form-label">Tratamentos</label>
+            <label class="form-label">💊 Tratamentos</label>
 
             @if (Model.HistoricoTratamentos.Any())
             {
@@ -195,7 +195,7 @@ else
 
         <!-- ===== Lista de Exames (escolhidos do catálogo) ===== -->
         <div class="mb-3">
-            <label class="form-label">Exames</label>
+            <label class="form-label">🧪 Exames</label>
 
             @if (Model.HistoricoExames.Any())
             {
@@ -240,7 +240,7 @@ else
 
         <!-- ===== Lista de Vacinas (escolhidas do catálogo) ===== -->
         <div class="mb-3">
-            <label class="form-label">Vacinas</label>
+            <label class="form-label">💉 Vacinas</label>
 
             @if (Model.HistoricoVacinas.Any())
             {

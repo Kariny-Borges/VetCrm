@@ -6,6 +6,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>🏥 Internações</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Nova Internação</a>
 </div>
 
 <table class="table table-hover">
@@ -38,7 +39,9 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">👁️</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success" title="Editar">✏️</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Detalhes">👁️</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Excluir">🗑️</a>
                 </td>
             </tr>
         }
