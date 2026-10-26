@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
 using VetCrm.Models;
@@ -6,6 +7,7 @@ using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Roles = "Gerente,Financeiro")]
     public class ServicoController : Controller
     {
         private readonly VetCrmContext _context;

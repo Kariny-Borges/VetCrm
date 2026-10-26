@@ -24,6 +24,8 @@
             <dd class="col-sm-8">@Model.DataEntrada.ToString("dd/MM/yyyy")</dd>
             <dt class="col-sm-4">Data de Saída</dt>
             <dd class="col-sm-8">@(Model.DataSaida?.ToString("dd/MM/yyyy") ?? "-")</dd>
+            <dt class="col-sm-4">Observações</dt>
+            <dd class="col-sm-8">@Model.Observacoes</dd>
         </dl>
 
         <form asp-action="Delete">

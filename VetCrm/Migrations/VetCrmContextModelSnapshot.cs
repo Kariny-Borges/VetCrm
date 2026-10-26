@@ -230,6 +230,9 @@ namespace VetCrm.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PacienteId")
                         .HasColumnType("int");
 

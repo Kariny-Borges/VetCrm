@@ -57,6 +57,7 @@ namespace VetCrm.Controllers
             {
                 Id = internacao.Id,
                 Motivo = internacao.Motivo,
+                Observacoes = internacao.Observacoes,
                 DataEntrada = internacao.DataEntrada,
                 DataSaida = internacao.DataSaida,
                 PacienteId = internacao.PacienteId,
@@ -88,6 +89,7 @@ namespace VetCrm.Controllers
                 {
                     PacienteId = model.PacienteId,
                     Motivo = model.Motivo,
+                    Observacoes = model.Observacoes,
                     DataEntrada = model.DataEntrada,
                     DataSaida = model.DataSaida
                 };
@@ -114,6 +116,7 @@ namespace VetCrm.Controllers
                 Id = internacao.Id,
                 PacienteId = internacao.PacienteId,
                 Motivo = internacao.Motivo,
+                Observacoes = internacao.Observacoes,
                 DataEntrada = internacao.DataEntrada,
                 DataSaida = internacao.DataSaida
             };
@@ -137,6 +140,7 @@ namespace VetCrm.Controllers
 
                 internacao.PacienteId = model.PacienteId;
                 internacao.Motivo = model.Motivo;
+                internacao.Observacoes = model.Observacoes;
                 internacao.DataEntrada = model.DataEntrada;
                 internacao.DataSaida = model.DataSaida;
                 _context.Internacoes.Update(internacao);
@@ -169,6 +173,7 @@ namespace VetCrm.Controllers
             {
                 Id = internacao.Id,
                 Motivo = internacao.Motivo,
+                Observacoes = internacao.Observacoes,
                 DataEntrada = internacao.DataEntrada,
                 DataSaida = internacao.DataSaida,
                 PacienteId = internacao.PacienteId,

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Roles = "Gerente,Financeiro")]
     public class ProdutoController : Controller
     {
         private readonly VetCrmContext _context;
