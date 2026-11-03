@@ -7,7 +7,7 @@ using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
-    [Authorize(Roles = "Gerente,Financeiro")]
+    [Authorize(Policy = Permissoes.ServicoVer)]
     public class ServicoController : Controller
     {
         private readonly VetCrmContext _context;

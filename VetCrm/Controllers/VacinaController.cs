@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using VetCrm.Data;
 using VetCrm.Models;
 using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Policy = Permissoes.VacinaVer)]
     public class VacinaController : Controller
     {
         private readonly VetCrmContext _context;

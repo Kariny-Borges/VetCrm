@@ -7,7 +7,7 @@ using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
-    [Authorize(Roles = "Gerente,Financeiro")]
+    [Authorize(Policy = Permissoes.FormaPagamentoVer)]
     public class FormaPagamentoController : Controller
     {
         private readonly VetCrmContext _context;

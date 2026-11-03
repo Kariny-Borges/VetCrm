@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VetCrm.Data;
+using VetCrm.Models;
 using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
@@ -59,6 +60,11 @@ namespace VetCrm.Controllers
                 new Claim(ClaimTypes.Email, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.Perfil.ToString())
             };
+
+            foreach (var permissao in Permissoes.DoPerfil(usuario.Perfil))
+            {
+                claims.Add(new Claim(Permissoes.TipoClaim, permissao));
+            }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -116,7 +122,7 @@ namespace VetCrm.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            TempData["Mensagem"] = "Se o email estiver cadastrado, a senha foi atualizada. Faça login com a nova senha.";
+            TempData["Mensagem"] = "Senha redefinida com sucesso!";
             return RedirectToAction(nameof(Login));
         }
 

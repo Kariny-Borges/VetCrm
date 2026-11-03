@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using VetCrm.Data;
 using VetCrm.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Policy = Permissoes.InternacaoVer)]
     public class InternacaoController : Controller
     {
         private VetCrmContext _context;

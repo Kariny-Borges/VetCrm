@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using VetCrm.Models
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,55 +26,126 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Agenda" asp-action="Index">📅 Agenda</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Cadastros
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Proprietario" asp-action="Index">Proprietários</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Paciente" asp-action="Index">Pacientes</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Especies" asp-action="Index">Espécies</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Raca" asp-action="Index">Raças</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuários</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Estabelecimento" asp-action="Index">Estabelecimentos</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Clínica
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Veterinario" asp-action="Index">Veterinários</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Especialidades" asp-action="Index">Especialidades</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Consulta" asp-action="Index">Consultas</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Internacao" asp-action="Index">Internação</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Exames" asp-action="Index">Exames</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Vacina" asp-action="Index">Vacinas</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Estoque
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Produto" asp-action="Index">Produtos</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Categoria" asp-action="Index">Categorias</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    Financeiro
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Servico" asp-action="Index">Serviços</a></li>
-                                    <li><a class="dropdown-item" asp-controller="FormaPagamento" asp-action="Index">Formas de Pagamento</a></li>
-                                </ul>
-                            </li>
+                            @if (User.Pode(Permissoes.AgendaVer))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Agenda" asp-action="Index">📅 Agenda</a>
+                                </li>
+                            }
+                            @if (User.PodeAlgum(Permissoes.ProprietarioVer, Permissoes.PacienteVer, Permissoes.EspecieVer,
+                                                Permissoes.RacaVer, Permissoes.UsuarioVer, Permissoes.EstabelecimentoVer))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        Cadastros
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        @if (User.Pode(Permissoes.ProprietarioVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Proprietario" asp-action="Index">Proprietários</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.PacienteVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Paciente" asp-action="Index">Pacientes</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.EspecieVer) || User.Pode(Permissoes.RacaVer))
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (User.Pode(Permissoes.EspecieVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Especies" asp-action="Index">Espécies</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.RacaVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Raca" asp-action="Index">Raças</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.UsuarioVer) || User.Pode(Permissoes.EstabelecimentoVer))
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                        }
+                                        @if (User.Pode(Permissoes.UsuarioVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuários</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.EstabelecimentoVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Estabelecimento" asp-action="Index">Estabelecimentos</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.PodeAlgum(Permissoes.VeterinarioVer, Permissoes.EspecialidadeVer, Permissoes.ConsultaVer,
+                                                Permissoes.InternacaoVer, Permissoes.ExameVer, Permissoes.VacinaVer))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        Clínica
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        @if (User.Pode(Permissoes.VeterinarioVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Veterinario" asp-action="Index">Veterinários</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.EspecialidadeVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Especialidades" asp-action="Index">Especialidades</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.ConsultaVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Consulta" asp-action="Index">Consultas</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.InternacaoVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Internacao" asp-action="Index">Internação</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.ExameVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Exames" asp-action="Index">Exames</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.VacinaVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Vacina" asp-action="Index">Vacinas</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.Pode(Permissoes.ProdutoVer) || User.Pode(Permissoes.CategoriaVer))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        Estoque
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        @if (User.Pode(Permissoes.ProdutoVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Produto" asp-action="Index">Produtos</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.CategoriaVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Categoria" asp-action="Index">Categorias</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.Pode(Permissoes.ServicoVer) || User.Pode(Permissoes.FormaPagamentoVer))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        Financeiro
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        @if (User.Pode(Permissoes.ServicoVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Servico" asp-action="Index">Serviços</a></li>
+                                        }
+                                        @if (User.Pode(Permissoes.FormaPagamentoVer))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="FormaPagamento" asp-action="Index">Formas de Pagamento</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
                         }
                     </ul>
 

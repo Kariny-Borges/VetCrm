@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using VetCrm.Data;
 using VetCrm.Models;
 using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Policy = Permissoes.UsuarioVer)]
     public class UsuarioController : Controller
     {
         private readonly VetCrmContext _context;

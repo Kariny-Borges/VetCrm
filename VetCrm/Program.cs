@@ -19,6 +19,29 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Permissoes.ProprietarioVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ProprietarioVer));
+    options.AddPolicy(Permissoes.PacienteVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.PacienteVer));
+    options.AddPolicy(Permissoes.ContatoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ContatoVer));
+    options.AddPolicy(Permissoes.EspecieVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.EspecieVer));
+    options.AddPolicy(Permissoes.RacaVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.RacaVer));
+    options.AddPolicy(Permissoes.EstabelecimentoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.EstabelecimentoVer));
+    options.AddPolicy(Permissoes.UsuarioVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.UsuarioVer));
+    options.AddPolicy(Permissoes.AgendaVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.AgendaVer));
+    options.AddPolicy(Permissoes.VeterinarioVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.VeterinarioVer));
+    options.AddPolicy(Permissoes.EspecialidadeVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.EspecialidadeVer));
+    options.AddPolicy(Permissoes.ConsultaVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ConsultaVer));
+    options.AddPolicy(Permissoes.InternacaoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.InternacaoVer));
+    options.AddPolicy(Permissoes.ProntuarioVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ProntuarioVer));
+    options.AddPolicy(Permissoes.ExameVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ExameVer));
+    options.AddPolicy(Permissoes.VacinaVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.VacinaVer));
+    options.AddPolicy(Permissoes.ProdutoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ProdutoVer));
+    options.AddPolicy(Permissoes.CategoriaVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.CategoriaVer));
+    options.AddPolicy(Permissoes.ServicoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.ServicoVer));
+    options.AddPolicy(Permissoes.FormaPagamentoVer, p => p.RequireClaim(Permissoes.TipoClaim, Permissoes.FormaPagamentoVer));
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

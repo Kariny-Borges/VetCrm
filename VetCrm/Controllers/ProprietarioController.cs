@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using VetCrm.Data;
 using VetCrm.Models;
 using VetCrm.ViewModels;
@@ -12,6 +13,7 @@ using VetCrm.ViewModels;
 
 namespace VetCrm.Controllers
 {
+    [Authorize(Policy = Permissoes.ProprietarioVer)]
     public class ProprietarioController : Controller
     {
         private readonly VetCrmContext _context;
