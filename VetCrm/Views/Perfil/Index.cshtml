@@ -1,0 +1,36 @@
+﻿@model VetCrm.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Perfil";
+}
+
+@if (TempData["Mensagem"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Mensagem"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row justify-content-center">
+
+    <!-- Card da foto (ainda não funciona) -->
+    <div class="col-md-5 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center mx-auto mb-3"
+                     style="width: 120px; height: 120px; font-size: 60px;">
+                    👤
+                </div>
+                <h5>@Model.Nome</h5>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-secondary" disabled>Alterar foto</button>
+
+                    <a asp-action="AlterarSenha" class="btn btn-primary">Alterar senha</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

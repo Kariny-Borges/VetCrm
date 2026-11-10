@@ -1,0 +1,46 @@
+@model VetCrm.ViewModels.AlterarSenhaViewModel
+@{
+    ViewData["Title"] = "Alterar senha";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-3">Alterar senha</h3>
+
+                <form asp-action="AlterarSenha" method="post" autocomplete="off">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="SenhaAtual" class="form-label"></label>
+                        <input asp-for="SenhaAtual" class="form-control" autocomplete="current-password" autofocus />
+                        <span asp-validation-for="SenhaAtual" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NovaSenha" class="form-label"></label>
+                        <input asp-for="NovaSenha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="NovaSenha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmarSenha" class="form-label"></label>
+                        <input asp-for="ConfirmarSenha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmarSenha" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Salvar nova senha</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Index">Voltar ao perfil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

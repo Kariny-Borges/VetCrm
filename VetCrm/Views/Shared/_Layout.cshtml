@@ -152,14 +152,49 @@
                     <ul class="navbar-nav">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <span class="navbar-text nav-greeting me-3">Olá, <strong>@User.Identity.Name</strong></span>
+                            @* pega a primeira letra do nome pra mostrar no avatar *@
+                            var nomeUsuario = User.Identity.Name ?? "";
+                            var inicial = nomeUsuario.Length > 0 ? nomeUsuario.Substring(0, 1).ToUpper() : "?";
+
+                            <li class="nav-item d-flex align-items-center">
+                                <span class="navbar-text nav-greeting me-3">Olá, <strong>@nomeUsuario</strong></span>
                             </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link">Sair</button>
-                                </form>
+
+                            <li class="nav-item dropdown">
+                                <!-- o avatar é o botão que abre o menu -->
+                                <a class="nav-link p-0" href="#" role="button" data-bs-toggle="dropdown">
+                                    <div class="avatar-usuario rounded-circle d-flex align-items-center justify-content-center">
+                                        @inicial
+                                    </div>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Perfil" asp-action="Index">
+                                            <strong>@nomeUsuario</strong>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Perfil" asp-action="AlterarSenha">
+                                            <span class="item-icone">🔒</span> Alterar Senha
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item disabled" href="#">
+                                            <span class="item-icone">🖼️</span> Alterar Foto
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item item-sair">
+                                                <span class="item-icone">🚪</span> Sair
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         }
                     </ul>
